@@ -16,7 +16,7 @@ function flipTile(element){
 	}
 	else {
 		$(element).addClass("flipped");
-		//$(element).parent().css({"z-index":"200"});
+		$(element).parent().css({"z-index":"200"});
 	}
 
 	$(element).transition({
@@ -24,17 +24,18 @@ function flipTile(element){
 		perspective: '100px'
 	}, function (){
 		$("tile").unbind();
-		console.log($(this).children("face.back").children(".readmore"));
-		//$(this).children("face.back").children(".readmore").css({"z-index":8000});
+		console.log($(this).children("face.back").children("tilefacecontent").children(".readmore"));
+		$(this).children("face.back").children("tilefacecontent").children(".readmore").css({"z-index":8000});
 		$(element).parents("tilegroupcontainer").click(function(){
 			console.log("Fipping...");
 			$(element).transition({
 				rotateX: '0deg',
 				perspective: '100px'
 			}, function (){
-				
+				$("tile").css({"-webkit-transform-style": "flat"});
+				flipArticle($(this).attr("article"));
 			});
-			flipArticle($(this).attr("article"));
+			
 			
 		});
 	});
@@ -48,8 +49,8 @@ function flipArticle(articleNumber){
 	
 
 	console.log("Flipping Article: " + articleNumber);
-	$("articlecontainer articleface.back").show();
-	$("articlecontainer articleface.front").transition({
+	$("articlecontainer").show();
+	$("articlecontainer").transition({
 		rotateY: '180deg',
 		perspective: '1000px'
 	}, 500, "linear", function(){

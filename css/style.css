@@ -253,39 +253,37 @@ tilecontainer[tile="1"]{
 
 tilecontainer[tile="2"]{
   top:0px;
-  left:270px;
+  left:433px;
   zx-index: 102;
 }
 
 
 tilecontainer[tile="3"]{
-  top:145px;
+  top:181px;
   left:0px;
   zx-index: 103;
 }
 
 
 tilecontainer[tile="4"]{
-  top:145px;
-  left:270px;
+  top:181px;
+  left:433px;
   zx-index: 104;
 }
 
 
 tile {
   display: block;
-  width:250px;
-  height: 125px;
+  width:413px;
+  height: 161px;
   position: relative;
   -webkit-transform-style: preserve-3d;
   -webkit-transition: -webkit-transform 0.5s;
-  box-shadow: 5px 5px 5px rgba(0,0,0,0.5);
 }
 
 tile.flipped {
   kz-index: 200;
   background:transparent;
-  box-shadow: 0px 0px 0px rgba(0,0,0,0.5);
 }
 
 tile face {
@@ -297,26 +295,39 @@ tile face {
 
 tile face.front {
   display: block;
-  height: 125px;
-  width: 250px;
-  background: #FFF;
+  height: 161px;
+  width: 413px;
+  background: url("../img/tile-thumb-bg.png") no-repeat;
 }
 
 tile face.back {
   display: block;
-  height: 500px;
-  width: 500px;
-  background: #9ce0f4;
-  top: -375px;
+  height: 457px;
+  width: 670px;
+  background: url("../img/tile-article-bg.png") no-repeat;
+  top: -290px;
+  left: -20px;
   -webkit-transform-style: flat;
   -webkit-transform: rotateX(180deg);
-  box-shadow: 5px 5px 5px rgba(0,0,0,0.5);
   box-sizing: border-box;
-  padding: 0px 0px 0px 15px;
+  padding: 33px 0px 0px 33px;
+}
+
+tilefacecontent {
+  display: block;
+  width: 601px;
+  height: 386px;
+  background: #FFF;
+  position: relative;
+  box-sizing: border-box;
+  padding: 15px 15px 0px 15px;
 }
 
   tile h2 {
-    margin:5px 0px 10px 0px;    
+    margin:5px 0px 10px 0px;
+    background: #000;
+    color: #FFF;
+    padding: 5px 5px 5px 5px;    
   }
 
   tile tagline {
@@ -324,10 +335,19 @@ tile face.back {
   }
 
   tile p {
-    margin:5px 15px 10px 0px;    
+    margin:5px 15px 10px 0px;
+    font-size: 12px;    
   }
 
   tile div.readmore {
+    display: block;
+    height:30px;
+    width:115px;
+    background: #FFF;
+    cursor: pointer;
+  }
+
+  tile div.close {
     display: block;
     height:30px;
     width:115px;
@@ -340,7 +360,7 @@ articlecontainer {
   height: 100%;
   margin-left: 100px;
   position: relative;
-  
+  -webkit-transform-style: preserve-3d;
   -webkit-perspective: 1200px;
 }
 
@@ -351,7 +371,7 @@ articlecontainer articleface {
   top: 0px;
   left: 50px;
   width: 750px;
-  -webkit-transform-style: preserve-3d;
+  
 
   -webkit-backface-visibility: hidden;
 }
@@ -362,9 +382,7 @@ articlecontainer articleface p {
 
 articlecontainer articleface.front {
   background: #0cb5e6;
-  -webkit-transform-origin: right top;
   -webkit-backface-visibility: hidden;
-  -webkit-transform-style: preserve-3d;
 
 }
 
@@ -404,8 +422,7 @@ articlecontainer articleface.flipped articlecontentface.back {
 
 
 articleface div {
-        height: 100%;
-
+  height: 100%;
 }
 
 

@@ -219,8 +219,10 @@ td { vertical-align: top; }
    ========================================================================== */
 
 div[role="main"] {
-  height: 1080px;
+  height: 1200px;
+  width: 100%;
   background: #0cb5e6;
+  background: url("../img/main-bg-1.png");
 }
 tilegroupcontainer {
 
@@ -230,9 +232,9 @@ tilegroupcontainer[group="1"]{
   display: block;
   position: absolute;
   top:200px;
-  left:100px;
-  width: 550px;
-  height: 750px;
+  left:80px;
+  width: 845px;
+  height: 350px;
 }
 
 tilegroup {
@@ -242,7 +244,8 @@ tilegroup {
 tilecontainer {
   display: block;
   position: absolute;
-  -webkit-perspective: 500;
+  -webkit-perspective: 1200;
+  -webkit-backface-visibility: hidden;
 }
 
 tilecontainer[tile="1"]{
@@ -278,11 +281,12 @@ tile {
   height: 161px;
   position: relative;
   -webkit-transform-style: preserve-3d;
-  -webkit-transition: -webkit-transform 0.5s;
+  -webkit-transition: -webkit-transform 2.5s;
+  cursor: pointer;
 }
 
 tile.flipped {
-  kz-index: 200;
+  z-index: 200;
   background:transparent;
 }
 
@@ -291,13 +295,30 @@ tile face {
   top: 0px;
   left: 0px;
   -webkit-backface-visibility: hidden;
+  box-sizing: border-box;
 }
 
 tile face.front {
   display: block;
   height: 161px;
   width: 413px;
-  background: url("../img/tile-thumb-bg.png") no-repeat;
+  background: url("../img/tile-thumb-bg-green.png") no-repeat;
+  padding: 32px 0px 0px 45px;
+
+}
+
+tile face.front h3 {
+  display: inline-block;
+  font-size: 16px;
+  width: 159px;
+  color: #FFF;
+  margin: 3px 0px 0px 0px;
+}
+
+tile face.front img {
+  display: inline-block;
+  float: right;
+  margin: 0px 33px 0px 0px;
 }
 
 tile face.back {
@@ -309,8 +330,27 @@ tile face.back {
   left: -20px;
   -webkit-transform-style: flat;
   -webkit-transform: rotateX(180deg);
-  box-sizing: border-box;
   padding: 33px 0px 0px 33px;
+}
+
+tilecontainer[tile="1"] tile face.back{
+  top: -250px;
+  left: 80px;
+}
+
+tilecontainer[tile="2"] tile face.back{
+  top: -250px;
+left: -330px;
+}
+
+tilecontainer[tile="3"] tile face.back{
+  top: -80px;
+  left: 80px;
+}
+
+tilecontainer[tile="4"] tile face.back{
+  top: -80px;
+  left: -330px;
 }
 
 tilefacecontent {
@@ -330,12 +370,24 @@ tilefacecontent {
     padding: 5px 5px 5px 5px;    
   }
 
+  tile h3 {
+    font-size: 16px;
+  }
+
+  tile img {
+    float: right;
+    margin: 0px 10px 20px 0px;
+    clear: right;
+  }
+
   tile tagline {
     margin:5px 0px 10px 0px;    
   }
 
-  tile p {
+  tilegroupcontainer tilecontainer tile p {
     margin:5px 15px 10px 0px;
+    font-size: 12px;
+    width: 340px;
     font-size: 12px;    
   }
 
@@ -358,10 +410,12 @@ tilefacecontent {
 articlecontainer {
   display: block;
   height: 100%;
-  margin-left: 100px;
   position: relative;
   -webkit-transform-style: preserve-3d;
   -webkit-perspective: 1200px;
+  width: 50%;
+  z-index: 400;
+  float: left;
 }
 
 articlecontainer articleface {
@@ -369,9 +423,9 @@ articlecontainer articleface {
   height: 100%;
   position: absolute;
   top: 0px;
-  left: 50px;
-  width: 750px;
-  
+  left: 0px;
+  width: 100%;
+  box-sizing: border-box;
 
   -webkit-backface-visibility: hidden;
 }
@@ -381,49 +435,54 @@ articlecontainer articleface p {
 }
 
 articlecontainer articleface.front {
-  background: #0cb5e6;
-  -webkit-backface-visibility: hidden;
+  gbackground: #0cb5e6;
 
 }
 
 articlecontainer articleface.back {
   display: block;
   background:#FFF;
-} 
-
-articlecontainer articleface articlecontentface {
-  display: block;
-  height: 100%;
-  width: 750px;
+  -webkit-transform: rotateY(180deg);
   position: absolute;
-  top: 0px;
-  left: 0px;
-  -webkit-backface-visibility: hidden;
-
-}
-
-articlecontainer articleface articlecontentface.front {
-  background: #6fdca0;
-}
-
-articlecontainer articleface articlecontentface.back {
-  display:block;
-  background: #FFF;
-  height: 100%;
-  -webkit-backface-visibility: hidden;
-  -webkit-transform: rotateX(180deg);
-  lz-index: 105;
-  position: relative;
-}
-
-articlecontainer articleface.flipped articlecontentface.back {
-  -webkit-transform: rotateX(180deg);
-}
-
+  padding: 10px 0px 0px 20px;
+  height: 90%;
+} 
 
 articleface div {
   height: 100%;
 }
+
+  .article-button {
+    position: absolute;
+    background: green;
+    cursor: pointer;
+
+  }
+  .article-button.readmore {
+    display: block;
+    height:27px;
+    width:70px;
+    background: blue;
+    color: white;
+    top:0px;
+    left:0px;
+    display:none;
+    z-index: 500;
+    background: url("../img/more-button.png");
+  }
+
+  .article-button.close {
+    display: block;
+    height:27px;
+    width:70px;
+    background: red;
+    cursor: pointer;
+    background:  url("../img/close-button.png");
+    top:0px;
+    left:0px;
+    display:none;
+    z-index: 501;
+  }
 
 
 

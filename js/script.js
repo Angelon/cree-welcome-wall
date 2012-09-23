@@ -2,7 +2,24 @@
 
 */
 
+var WelcomeWall = {
+	TileGroup : function(){
+		this.currentTile;
+	},
+	tileGroups : {}
+
+}
+
+var tileGroup1Current;
+var tileGroup2Current;
+var tileGroup3Current;
+var tileGroup4Current;
+
 $(document).ready(function (){
+	for(var x=0;x<=4;x++){
+
+	}
+
 	$("tile").click(function (){
 		flipTile($(this));
 	});
@@ -10,9 +27,11 @@ $(document).ready(function (){
 
 function flipTile(element){
 	console.log("Firing transition");
-	//console.log($(element));
+	console.log($(element));
 	var myArticleNumber = $(element).attr("article");
-	console.log($("articlecontainer[article="+myArticleNumber+"] tile"));
+	var myTileNumber = $(element).parent().attr("tile");
+	$(element).parent().parent().attr("currentTile", myTileNumber);
+	//console.log($("articlecontainer[article="+myArticleNumber+"] tile"));
 
 	if($(element).hasClass("flipped")){
 		
@@ -29,20 +48,23 @@ function flipTile(element){
 	//console.log($(element).children("face.back").children("tilefacecontent").offset());
 	//console.log($(element).children("face.back").children("tilefacecontent").width());
 	//console.log($(element).children("face.back").children("tilefacecontent").height());
+	activateTileNavButtons(myArticleNumber);
 
-	var topPos = ($(element).children("face.back").children("tilefacecontent").offset().top + $(element).children("face.back").children("tilefacecontent").height()) - 30;
-	var leftPos = ($(element).children("face.back").children("tilefacecontent").offset().left + $(element).children("face.back").children("tilefacecontent").width()) - 350;
+	var topPos = ($(element).children("face.back").children("tilefacecontent").offset().top + $(element).children("face.back").children("tilefacecontent").height()) - 20;
+	var leftPos = ($(element).children("face.back").children("tilefacecontent").offset().left + $(element).children("face.back").children("tilefacecontent").width()) - 560;
 	var readMoreButton = $(".article-button.readmore[article="+myArticleNumber+"]");
 	var closeButton = $(".article-button.close[article="+myArticleNumber+"]");
 
 	readMoreButton.offset({top:topPos, left: leftPos});
 	readMoreButton.fadeIn();
 		//Remove all click events from tiles
+		console.log("yo");
+		console.log($("articlecontainer[article="+myArticleNumber+"] tile"));
 		$("articlecontainer[article="+myArticleNumber+"] tile").unbind();
 
 		readMoreButton.click(function(){
-			$(".article-button.readmore").hide();
-			$(".article-button.close").hide();
+			$(".article-button.readmore[article="+myArticleNumber+"]").hide();
+			$(".article-button.close[article="+myArticleNumber+"]").hide();
 			
 			//On click, flip the tile over again
 			$(element).transition({
@@ -58,12 +80,13 @@ function flipTile(element){
 			
 		});
 
-		closeButton.offset({top:topPos, left: leftPos+200});
+		closeButton.offset({top:topPos, left: leftPos+90});
 		closeButton.fadeIn();
 
 		closeButton.click(function (){
 			
 			resetTile(element, myArticleNumber);
+			deactivateTileNavButtons(myArticleNumber);
 		});
 	});
 
@@ -80,14 +103,14 @@ function resetTile(element, articleNumber){
 		
 	}
 
-	$(".article-button.readmore").offset({top:0, left: 0});
-	$(".article-button.readmore").hide();
-	$(".article-button.readmore").unbind();
+	$(".article-button.readmore[article="+articleNumber+"]").offset({top:0, left: 0});
+	$(".article-button.readmore[article="+articleNumber+"]").hide();
+	$(".article-button.readmore[article="+articleNumber+"]").unbind();
 
 
-	$(".article-button.close").offset({top:0, left: 0});
-	$(".article-button.close").hide();
-	$(".article-button.close").unbind();
+	$(".article-button.close[article="+articleNumber+"]").offset({top:0, left: 0});
+	$(".article-button.close[article="+articleNumber+"]").hide();
+	$(".article-button.close[article="+articleNumber+"]").unbind();
 
 	
 
@@ -112,10 +135,10 @@ function flipArticle(articleNumber){
 	}, 500,  function(){
 		var topPos = $(this).height() - 500;
 		var leftPos = $(this).width();
-		$(".article-button.close").offset({top: topPos, left: leftPos});
-		$(".article-button.close").fadeIn();
-		$(".article-button.close").unbind();
-		$(".article-button.close").click(function (){
+		$(".article-button.close[article="+articleNumber+"]").offset({top: topPos, left: leftPos});
+		$(".article-button.close[article="+articleNumber+"]").fadeIn();
+		$(".article-button.close[article="+articleNumber+"]").unbind();
+		$(".article-button.close[article="+articleNumber+"]").click(function (){
 			resetArticle(articleNumber);
 		});
 		
@@ -142,3 +165,64 @@ function bindTiles(articleNumber){
 	});
 }
 
+function activateTileNavButtons(articleNumber){
+	$(".tile-nav-button.next[article="+articleNumber+"]").fadeIn();
+	$(".tile-nav-button.next[article="+articleNumber+"]").unbind();
+	$(".tile-nav-button.next[article="+articleNumber+"]").click(function(){
+		goToNextTile(articleNumber);
+	});
+
+	$(".tile-nav-button.previous[article="+articleNumber+"]").fadeIn();
+	$(".tile-nav-button.previous[article="+articleNumber+"]").unbind();
+	$(".tile-nav-button.previous[article="+articleNumber+"]").click(function(){
+		goToPreviousTile(articleNumber);
+	});
+}
+
+function deactivateTileNavButtons(articleNumber){
+	$(".tile-nav-button.next[article="+articleNumber+"]").fadeOut();
+	$(".tile-nav-button.next[article="+articleNumber+"]").unbind();
+
+	$(".tile-nav-button.previous[article="+articleNumber+"]").fadeOut();
+	$(".tile-nav-button.previous[article="+articleNumber+"]").unbind();
+}
+
+function goToNextTile(articleNumber){
+	console.log(articleNumber);
+	var currentTileNumber = $("articlecontainer[article="+articleNumber+"] tilegroupcontainer tilegroup").attr("currentTile");
+	var currentTile = $("articlecontainer[article="+articleNumber+"] tilecontainer[tile="+currentTileNumber+"] tile");
+	console.log(currentTileNumber);
+	console.log(currentTile);
+	currentTileNumber = parseInt(currentTileNumber);
+	resetTile(currentTile, articleNumber);
+	var nextTile;
+	if(currentTileNumber == 4){
+		nextTile = $("articlecontainer[article="+articleNumber+"] tilecontainer[tile="+1+"] tile");
+	}
+	else {
+		currentTileNumber = currentTileNumber +1;
+		nextTile = $("articlecontainer[article="+articleNumber+"] tilecontainer[tile="+currentTileNumber+"] tile");
+	}
+
+	flipTile(nextTile);
+}
+
+function goToPreviousTile(articleNumber){
+	console.log(articleNumber);
+	var currentTileNumber = $("articlecontainer[article="+articleNumber+"] tilegroupcontainer tilegroup").attr("currentTile");
+	var currentTile = $("articlecontainer[article="+articleNumber+"] tilecontainer[tile="+currentTileNumber+"] tile");
+	console.log(currentTileNumber);
+	console.log(currentTile);
+	currentTileNumber = parseInt(currentTileNumber);
+	resetTile(currentTile, articleNumber);
+	var nextTile;
+	if(currentTileNumber == 1){
+		nextTile = $("articlecontainer[article="+articleNumber+"] tilecontainer[tile="+4+"] tile");
+	}
+	else {
+		currentTileNumber = currentTileNumber -1;
+		nextTile = $("articlecontainer[article="+articleNumber+"] tilecontainer[tile="+currentTileNumber+"] tile");
+	}
+
+	flipTile(nextTile);
+}

@@ -233,7 +233,7 @@ div[role="panel-1"] {
   background: url("../img/main-bg-1.png");
   -webkit-perspective: 1200;
   perspective-origin: 1200;
-  display: none;
+  display: block;
 }
 
 div[role="panel-2"] {

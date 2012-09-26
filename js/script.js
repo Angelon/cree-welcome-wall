@@ -23,7 +23,60 @@ $(document).ready(function (){
 	$("tile").click(function (){
 		flipTile($(this));
 	});
+
+	$(".glass-panel").each(function (){
+		bindGlassPanel($(this));
+	});
+
+
+	//$.getJSON("http://api.flickr.com/services/rest/?method=flickr.photosets.getPhotos&photoset_id=72157631528268528&api_key=3bdd28c7cb805fc97e345cfc6f4bf0b3&format=json&=?", function(data){
+	//	console.log(data);
+	//});
+
+	parseRSS("http://api.flickr.com/services/feeds/groups_pool.gne?id=554802@N25&lang=en-us&format=rss_200", displayFlickrFeed);
+
 });
+
+function bindGlassPanel(element){
+	$(element).children(".panel-container").children(".panel.front").children(".open-button").click(function (){
+		$(this).unbind();
+		//$(element).children(".panel-container").children(".panel.front").children(".open-button").hide();
+		//$(element).children(".panel-container").children(".panel.front").children(".agenda-button").hide();
+		$(element).transition({
+				rotateX: '180deg',
+				perspective: '500px'
+			}, function (){
+				$(this).children(".panel-container").children(".panel.back").children(".hide-button").click(function(){
+					$(element).transition({
+						rotateX: '0deg',
+						perspective: '500px'}, function (){
+							bindGlassPanel(element);
+					});
+					$(this).unbind();
+				});
+			});
+	});
+}
+
+function parseRSS(url, callback) {
+	  $.ajax({
+	    url: document.location.protocol + '//ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=10&callback=?&q=' + encodeURIComponent(url),
+	    dataType: 'json',
+	    success: function(data) {
+	      callback(data.responseData.feed);
+	    }
+	  });
+}
+
+function jsonFlickrApi(data){
+	console.log("jsonFlickrApi Thing");
+	console.log(data);
+}
+
+function displayFlickrFeed(data){
+	console.log("Displaying flickr Feed");
+	console.log(data);
+}
 
 function flipTile(element){
 	console.log("Firing transition");
@@ -118,7 +171,7 @@ function resetTile(element, articleNumber){
 		rotateX: '0deg',
 		perspective: '100px'
 	}, function (){
-		$("articlecontainer[article="+articleNumber+"] tilecontainer").css({"z-index":""});
+		$(element).parent("tilecontainer").css({"z-index":""});
 		bindTiles(articleNumber);
 	});
 }
@@ -193,8 +246,9 @@ function goToNextTile(articleNumber){
 	var currentTile = $("articlecontainer[article="+articleNumber+"] tilecontainer[tile="+currentTileNumber+"] tile");
 	console.log(currentTileNumber);
 	console.log(currentTile);
+	
 	currentTileNumber = parseInt(currentTileNumber);
-	resetTile(currentTile, articleNumber);
+	
 	var nextTile;
 	if(currentTileNumber == 4){
 		nextTile = $("articlecontainer[article="+articleNumber+"] tilecontainer[tile="+1+"] tile");
@@ -205,6 +259,7 @@ function goToNextTile(articleNumber){
 	}
 
 	flipTile(nextTile);
+	resetTile(currentTile, articleNumber);
 }
 
 function goToPreviousTile(articleNumber){
@@ -213,8 +268,9 @@ function goToPreviousTile(articleNumber){
 	var currentTile = $("articlecontainer[article="+articleNumber+"] tilecontainer[tile="+currentTileNumber+"] tile");
 	console.log(currentTileNumber);
 	console.log(currentTile);
+	
 	currentTileNumber = parseInt(currentTileNumber);
-	resetTile(currentTile, articleNumber);
+	
 	var nextTile;
 	if(currentTileNumber == 1){
 		nextTile = $("articlecontainer[article="+articleNumber+"] tilecontainer[tile="+4+"] tile");
@@ -225,4 +281,5 @@ function goToPreviousTile(articleNumber){
 	}
 
 	flipTile(nextTile);
+	resetTile(currentTile, articleNumber);
 }

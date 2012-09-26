@@ -218,11 +218,38 @@ td { vertical-align: top; }
    Author:
    ========================================================================== */
 
-div[role="main"] {
-  height: 1200px;
+header {
+  height:72px;
+  background: url("../img/panel-1-top-image.png") no-repeat;
+}
+
+footer {
+  height: 73px;
+  background: url("../img/panel-bottom-border.png") no-repeat;
+}
+
+div[role="panel-1"] {
+  height: 935px;
+  background: url("../img/main-bg-1.png");
+  -webkit-perspective: 1200;
+  perspective-origin: 1200;
+  display: none;
+}
+
+div[role="panel-2"] {
+  height: 935px;
   width: 100%;
   background: #0cb5e6;
   background: url("../img/main-bg-1.png");
+  display: block;
+
+}
+
+.panel-header{
+  height: 59px;
+}
+.panel-header[panel="1"]{
+  background: url("../img/panel-1-tab.png");
 }
 tilegroupcontainer {
 
@@ -246,6 +273,8 @@ tilecontainer {
   position: absolute;
   -webkit-perspective: 1200;
   -webkit-backface-visibility: hidden;
+  -moz-perspective: 1200;
+  -moz-backface-visibility: hidden;
 }
 
 tilecontainer[tile="1"]{
@@ -282,6 +311,8 @@ tile {
   position: relative;
   -webkit-transform-style: preserve-3d;
   -webkit-transition: -webkit-transform 2.5s;
+  -moz-transform-style: preserve-3d;
+  -moz-transition: -webkit-transform 2.5s;
   cursor: pointer;
 }
 
@@ -295,7 +326,9 @@ tile face {
   top: 0px;
   left: 0px;
   -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
   box-sizing: border-box;
+  -moz-box-sizing: border-box;
 }
 
 tile face.front {
@@ -330,6 +363,8 @@ tile face.back {
   left: -20px;
   -webkit-transform-style: flat;
   -webkit-transform: rotateX(180deg);
+  -moz-transform-style: flat;
+  -moz-transform: rotateX(180deg);
   padding: 33px 0px 0px 33px;
 }
 
@@ -360,6 +395,7 @@ tilefacecontent {
   background: #FFF;
   position: relative;
   box-sizing: border-box;
+  -moz-box-sizing: border-box;
   padding: 15px 15px 0px 15px;
 }
 
@@ -422,6 +458,8 @@ articlecontainer {
   position: relative;
   -webkit-transform-style: preserve-3d;
   -webkit-perspective: 1200px;
+  -moz-transform-style: preserve-3d;
+  -moz-perspective: 1200px;
   width: 49%;
   z-index: 400;
   float: left;
@@ -435,8 +473,9 @@ articlecontainer articleface {
   left: 0px;
   width: 100%;
   box-sizing: border-box;
-
   -webkit-backface-visibility: hidden;
+  -moz-box-sizing: border-box;
+  -moz-backface-visibility: hidden;
 }
 
 articlecontainer articleface p {
@@ -452,6 +491,7 @@ articlecontainer articleface.back {
   display: block;
   background:#FFF;
   -webkit-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
   position: absolute;
   padding: 10px 0px 0px 20px;
   height: 90%;
@@ -515,6 +555,148 @@ articleface div {
 
 
 
+.glass-panel {
+ position: absolute;
+ left: 37px;
+ top: 850px;
+ -webkit-transform-style: preserve-3d;
+ -moz-transform-style: preserve-3d;
+}
+
+.glass-panel.welcome {
+   left: 37px;
+ top: 950px;
+}
+
+.glass-panel.weather{
+   left: 1187px;
+ top: 950px;
+}
+
+
+.glass-panel .panel-container .panel {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+
+}
+
+.glass-panel .panel-container .panel.back .articletab {
+  width: 59px;
+  height: 74px;
+  position: absolute;
+  top: -5px;
+  left: 27px;
+  background: url("../img/glass-panel-tab.png") no-repeat;
+}
+
+
+.glass-panel .panel-container .panel.front {
+  height: 45px;
+  width: 644px;
+  background: url("../img/glass-panel-bg-closed.png") no-repeat;
+}
+
+.glass-panel .panel-container .panel.back {
+  height: 244px;
+  width: 644px;
+  background: url("../img/glass-panel-bg-open.png") no-repeat;
+  -webkit-transform: rotateX(180deg);
+  -moz-transform: rotateX(180deg);
+  top:-70px;
+}
+
+.glass-panel-button {
+  position: absolute;
+  width: 90px;
+  height: 33px;
+  cursor: pointer;
+}
+
+.glass-panel-button.agenda-button {
+  background: url("../img/glass-panel-agenda-button.png") no-repeat;
+}
+
+.glass-panel-button.hide-button {
+  background: url("../img/glass-panel-hide-button.png") no-repeat;
+}
+
+.glass-panel-button.open-button {
+  background: url("../img/glass-panel-open-button.png") no-repeat;
+}
+
+.glass-panel .panel-container .panel.back .hide-button {
+  top: 185px;
+  left: 30px;
+}
+
+.glass-panel .panel-container .panel.back .agenda-button {
+  top: 185px;
+  left: 130px;
+}
+
+.glass-panel .panel-container .panel.front .open-button {
+  top: 10px;
+  left: 30px;
+}
+
+.glass-panel .panel-container .panel.front .agenda-button {
+  top: 10px;
+  left: 130px;
+}
+
+.welcome-container {
+  position: absolute;
+  top: 47px;
+  left: 27px;
+  background: #0b8bd5;
+  width: 590px;
+  height: 132px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  color: #FFF;
+  padding: 20px 0px 0px 30px;
+}
+
+.welcome-container .welcome-text {
+  font-size: 26px;
+  font-weight: bold;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+.welcome-container .client-name {
+  font-size: 46px;
+  font-weight: bold;
+  text-transform: uppercase;
+  clear: left;
+  display: inline-block;
+}
+
+.welcome-overlay{
+  position: absolute;
+  top: 47px;
+  left: 27px;
+  width: 590px;
+  height: 132px;
+  background: url("../img/welcome-overlay-2.png");
+}
+
+.flickr-panel {
+  position: absolute;
+  top: 200px;
+  left: 150px;
+}
+
+.flickr-image {
+  width: 1561px;
+  height: 737px;
+  background: url("../img/flickr-feed-test.png");
+}
 
 
 

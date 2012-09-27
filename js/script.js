@@ -2,40 +2,257 @@
 
 */
 
+var bindContext = function (fn, context, arguments) {
+	if(arguments){
+		console.log("Binder Log");
+		console.log(arguments);
+		console.log(context);
+		console.log(fn);
+	}
+	return function () {
+		fn.apply(context, arguments);
+	};
+};
+
 var WelcomeWall = {
-	TileGroup : function(){
-		this.currentTile;
+	Tile : function(tileNumber){
+		this.tileNumber = tileNumber;
+		this.element = $("<tile />");
+		this.element.attr("tile", tileNumber);
+		this.container = $("<tilecontainer />").attr("tile", tileNumber).append(this.element);
+		this.frontFace = $("<face />").addClass("front").appendTo(this.element);
+		this.backFace = $("<face />").addClass("back").appendTo(this.element);
+
+		this.init = function (){
+			//console.log("Tile Init");
+			this.container.click(bindContext(this.clickHandler, this));
+		}
 	},
-	tileGroups : {}
+	TileGroup : function(){
+		this.element = $("<tilegroup />");
+		this.container = $("<tilegroupcontainer />").append(this.element);
+		this.currentTile;
+		this.tiles = {};
+
+		this.init = function (){
+			var that = this;
+			this.groupEvents = _.extend({}, Backbone.Events);
+			this.groupEvents.on("TILE_CLICKED", function(e){
+				console.log("A tile was clicked");
+				//console.log(e);
+				that.flipTile(e);
+			});
+			this.groupEvents.on("TILE_FLIP_COMPLETE", function (e){
+				that.activateArticleNavButtons();
+				that.activateNavButtons();
+			})
+			this.groupEvents.on("TILE_RESET", function(e){
+				console.log("A tile was reset");
+				//console.log(e);
+				that.sendTileToBack(e);
+			});
+			for(var x=1; x<=4;x++){
+				var tile = new WelcomeWall.Tile(x);
+				tile.broker = this.groupEvents;
+				this.tiles[x] = tile;
+				this.element.append(tile.container);
+				tile.init();
+			}
+			this.tileReadMoreButton = $("<div />").attr({"class":"article-button readmore"});
+			this.tileCloseButton = $("<div />").attr({"class":"article-button close"});
+			this.element.append(this.tileReadMoreButton);
+			this.element.append(this.tileCloseButton);
+
+			this.nextButton = $("<div />").attr({"class":"tile-nav-button next"});
+			this.previousButton = $("<div />").attr({"class":"tile-nav-button previous"});
+			this.element.append(this.nextButton);
+			this.element.append(this.previousButton);
+		}
+
+	},
+	Article : function (articleNumber){
+		this.element = $("<articlecontainer />");
+		this.container = this.element;
+		this.tileGroup = new WelcomeWall.TileGroup();
+		this.frontFace = $("<articleface />").addClass("front");
+		this.backFace = $("<articleface />").addClass("back");
+		this.articleIframe = $("<iframe />").attr({
+			src: "",
+			height:"90%",
+			width:"100%",
+			frameborder:"0"
+		});
+		this.backFace.append(this.articleIframe).appendTo(this.element);
+		this.frontFace.append(this.tileGroup.container).appendTo(this.element);
+
+
+		this.init = function (){
+			this.tileGroup.init();
+		}
+	},
+	ArticlePanel : function(panelNumber){
+		this.container = $("<div />").attr({
+			role:"panel-"+panelNumber
+		});
+		this.article;
+		this.init = function (){
+			console.log("Aritcle Panel Init");
+			for(var x=1; x<=2;x++){
+				var article = new WelcomeWall.Article(x);
+				this.article = article;
+				this.container.append(article.container);
+				article.init();
+			}
+		}
+	},
+
+	
+	
+	init: function(){
+		this.panel2 = new this.ArticlePanel(2);
+		$(this.panel2.container).insertAfter("header");
+		this.panel2.init();
+	}
 
 }
 
-var tileGroup1Current;
-var tileGroup2Current;
-var tileGroup3Current;
-var tileGroup4Current;
+WelcomeWall.TileGroup.prototype.flipTile = function (tileNumber){
+	console.log("Flipping Tile: " + tileNumber);
+	this.bringTileToFront(tileNumber);
+	this.currentTile = tileNumber;
+	//console.log(this.tiles[tileNumber].backFace.offset().top);
+	//var topPos = this.tiles[tileNumber].backFace.offset().top + 330;
+	//var leftPos = this.tiles[tileNumber].backFace.offset().left - 30;
+	//this.tileReadMoreButton.css({"top":topPos, "left":leftPos}).show();
+	//his.tileCloseButton.css({"top":topPos, "left":(leftPos + 100)}).show();
+	
+	
+}
 
-$(document).ready(function (){
-	for(var x=0;x<=4;x++){
+WelcomeWall.TileGroup.prototype.activateArticleNavButtons = function (){
+	this.tileReadMoreButton.fadeIn();
+	this.tileCloseButton.fadeIn();
+	this.tileCloseButton.click(bindContext(this.closeButtonClickHandler, this, this.currentTile));
+}
 
+WelcomeWall.TileGroup.prototype.deactivateArticleNavButtons = function (){
+	this.tileReadMoreButton.hide();
+	this.tileCloseButton.hide();
+	this.tileCloseButton.unbind();
+}
+
+WelcomeWall.TileGroup.prototype.activateNavButtons = function (){
+	console.log(this.nextButton);
+	this.nextButton.fadeIn();
+	this.previousButton.fadeIn();
+	this.nextButton.click(bindContext(this.nextButtonClickHandler, this, this.currentTile));
+	this.previousButton.click(bindContext(this.previousButtonClickHandler, this, this.currentTile));
+}
+
+WelcomeWall.TileGroup.prototype.deactivateNavButtons = function (){
+	this.nextButton.hide();
+	this.previousButton.hide();
+	this.unBindNavButtons();
+}
+
+WelcomeWall.TileGroup.prototype.unBindNavButtons = function () {
+	this.nextButton.unbind()
+	this.previousButton.unbind();
+}
+
+WelcomeWall.TileGroup.prototype.resetCurrentTile = function(tileNumber){
+	console.log("Resetting Tile: " + tileNumber);
+	
+	this.tiles[this.currentTile].reset();
+
+}
+
+WelcomeWall.TileGroup.prototype.bringTileToFront = function(tileNumber){
+	this.tiles[tileNumber].container.css({"z-index":"200"});
+}
+
+WelcomeWall.TileGroup.prototype.sendTileToBack = function(tileNumber){
+	console.log(tileNumber);
+	this.tiles[tileNumber].container.css({"z-index":""});
+}
+
+
+WelcomeWall.TileGroup.prototype.nextButtonClickHandler = function (){
+	this.unBindNavButtons();
+	this.deactivateArticleNavButtons();
+	this.groupEvents.on("TILE_RESET:NAV", bindContext(this.goToNextTile, this));
+	this.resetCurrentTile();
+}
+
+WelcomeWall.TileGroup.prototype.previousButtonClickHandler = function (){
+	this.unBindNavButtons();
+	this.deactivateArticleNavButtons();
+	this.groupEvents.on("TILE_RESET:NAV", bindContext(this.goToPreviousTile, this));
+	this.resetCurrentTile();
+}
+
+WelcomeWall.TileGroup.prototype.closeButtonClickHandler = function(){
+
+	this.deactivateArticleNavButtons();
+	this.deactivateNavButtons();
+	this.resetCurrentTile();
+}
+
+WelcomeWall.TileGroup.prototype.goToNextTile = function (){
+	this.groupEvents.off("TILE_RESET:NAV");
+	var currentTileNumber = parseInt(this.currentTile);
+	var nextTile;
+	if(currentTileNumber == 4){
+		nextTile = 1;
 	}
+	else {
+		nextTile = currentTileNumber +1;
+	}
+	this.flipTile(nextTile)
+	this.tiles[nextTile].flip();
+}
 
-	$("tile").click(function (){
-		flipTile($(this));
+WelcomeWall.TileGroup.prototype.goToPreviousTile = function (){
+	this.groupEvents.off("TILE_RESET:NAV");
+	var currentTileNumber = parseInt(this.currentTile);
+	var nextTile;
+	if(currentTileNumber == 1){
+		nextTile = 4;
+	}
+	else {
+		nextTile  = currentTileNumber -1;;
+	}
+	this.flipTile(nextTile)
+	this.tiles[nextTile].flip();
+}
+
+WelcomeWall.Tile.prototype.clickHandler = function (){
+	this.broker.trigger("TILE_CLICKED", this.tileNumber);
+	this.flip();
+}
+
+WelcomeWall.Tile.prototype.flip = function (){
+	var that = this;
+	this.element.transition({
+		rotateX: '180deg',
+		perspective: '1000px'
+	}, function (){
+		that.broker.trigger("TILE_FLIP_COMPLETE", that.tileNumber);
 	});
+}
 
-	$(".glass-panel").each(function (){
-		bindGlassPanel($(this));
+WelcomeWall.Tile.prototype.reset = function (){
+	var that = this;
+	this.element.transition({
+		rotateX: '0deg',
+		perspective: '1000px'
+	}, function (){
+		that.broker.trigger("TILE_RESET", that.tileNumber);
+		that.broker.trigger("TILE_RESET:NAV", that.tileNumber);
 	});
+}
 
 
-	//$.getJSON("http://api.flickr.com/services/rest/?method=flickr.photosets.getPhotos&photoset_id=72157631528268528&api_key=3bdd28c7cb805fc97e345cfc6f4bf0b3&format=json&=?", function(data){
-	//	console.log(data);
-	//});
-
-	parseRSS("http://api.flickr.com/services/feeds/groups_pool.gne?id=554802@N25&lang=en-us&format=rss_200", displayFlickrFeed);
-
-});
 
 function bindGlassPanel(element){
 	$(element).children(".panel-container").children(".panel.front").children(".open-button").click(function (){
@@ -79,20 +296,7 @@ function displayFlickrFeed(data){
 }
 
 function flipTile(element){
-	console.log("Firing transition");
-	console.log($(element));
-	var myArticleNumber = $(element).attr("article");
-	var myTileNumber = $(element).parent().attr("tile");
-	$(element).parent().parent().attr("currentTile", myTileNumber);
-	//console.log($("articlecontainer[article="+myArticleNumber+"] tile"));
-
-	if($(element).hasClass("flipped")){
-		
-	}
-	else {
-		$(element).addClass("flipped");
-		$(element).parent().css({"z-index":"200"});
-	}
+	
 
 	$(element).transition({
 		rotateX: '180deg',

@@ -252,7 +252,12 @@ div[role="panel-2"] {
   background: url("../img/panel-1-tab.png");
 }
 tilegroupcontainer {
-
+  display: block;
+  position: absolute;
+  top:200px;
+  left:80px;
+  width: 845px;
+  height: 350px;
 }
 
 tilegroupcontainer[group="1"]{
@@ -375,17 +380,17 @@ tilecontainer[tile="1"] tile face.back{
 
 tilecontainer[tile="2"] tile face.back{
   top: -250px;
-left: -330px;
+left: -350px;
 }
 
 tilecontainer[tile="3"] tile face.back{
-  top: -80px;
+  top: -70px;
   left: 80px;
 }
 
 tilecontainer[tile="4"] tile face.back{
-  top: -80px;
-  left: -330px;
+  top: -70px;
+  left: -350px;
 }
 
 tilefacecontent {
@@ -505,7 +510,7 @@ articleface div {
     position: absolute;
     background: green;
     cursor: pointer;
-
+    top: 350px;
   }
   .article-button.readmore {
     display: block;
@@ -513,8 +518,7 @@ articleface div {
     width:70px;
     background: blue;
     color: white;
-    top:0px;
-    left:0px;
+    left:130px;
     display:none;
     z-index: 500;
     background: url("../img/more-button.png");
@@ -527,8 +531,7 @@ articleface div {
     background: red;
     cursor: pointer;
     background:  url("../img/close-button.png");
-    top:0px;
-    left:0px;
+    left:230px;
     display:none;
     z-index: 501;
   }
@@ -542,15 +545,15 @@ articleface div {
 
   .tile-nav-button.next {
     background: url("../img/nav-arrow-button-right.png");
-    top: 780px;
-    left: 530px;
+    top: 480px;
+    left: 470px;
     cursor: pointer;
   }
 
   .tile-nav-button.previous {
     background: url("../img/nav-arrow-button-left.png");
-    top: 780px;
-    left: 440px;
+    top: 480px;
+    left: 370px;
   }
 
 

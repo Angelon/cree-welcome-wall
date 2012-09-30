@@ -702,6 +702,72 @@ articleface div {
 }
 
 
+.faux-article-container {
+  display: none;
+  height: 100%;
+  width: 971px;
+  -webkit-transform-style: preserve-3d;
+ -moz-transform-style: preserve-3d;
+ z-index: 400;
+ box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+.faux-article-container .faux-article-face-top div{
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+}
+
+.faux-article-container div tilegroupcontainer {
+  position: relative;
+  top:200px;
+  left: 80px;
+}
+
+.faux-article-face-top {
+  -moz-transform-origin: center bottom; /* Firefox */
+  -webkit-transform-origin: center bottom;
+  transform-origin: center bottom;
+  height: 375px;
+  -webkit-transform-style: preserve-3d;
+ -moz-transform-style: preserve-3d;
+ box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  padding: 50px 0px 0px 50px;
+  background: url("../img/main-bg-1.png");
+}
+
+.faux-article-face-top .front {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 100%;
+  width: 100%;
+  display: block;
+}
+
+.faux-article-face-top .back {
+  background: #FFF;
+  -webkit-transform: rotateX(180deg);
+  -moz-transform: rotateX(180deg);
+  position: absolute;
+  top: -185px;
+  left: 0px;
+  height: 560px;
+  width: 100%;
+  display: block;
+}
+
+.faux-article-face-bottom {
+  background: #FFF;
+  position: absolute;
+  top:0px;
+  left: 0px;
+  height: 375px;
+  width: 100%;
+  display: block;
+}
+
 
 
 

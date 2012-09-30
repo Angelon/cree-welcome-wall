@@ -15,7 +15,7 @@ var bindContext = function (fn, context, arguments) {
 };
 
 var WelcomeWall = {
-	Tile : function(tileNumber){
+	Tile : function(tileNumber, empty){
 		this.tileNumber = tileNumber;
 		this.element = $("<tile />");
 		this.element.attr("tile", tileNumber);
@@ -34,7 +34,7 @@ var WelcomeWall = {
 		this.currentTile;
 		this.tiles = {};
 
-		this.init = function (){
+		this.init = function (numberOfTiles){
 			var that = this;
 			this.groupEvents = _.extend({}, Backbone.Events);
 			this.groupEvents.on("TILE_CLICKED", function(e){
@@ -51,7 +51,7 @@ var WelcomeWall = {
 				//console.log(e);
 				that.sendTileToBack(e);
 			});
-			for(var x=1; x<=4;x++){
+			for(var x=1; x<=numberOfTiles;x++){
 				var tile = new WelcomeWall.Tile(x);
 				tile.broker = this.groupEvents;
 				this.tiles[x] = tile;
@@ -73,9 +73,11 @@ var WelcomeWall = {
 	Article : function (articleNumber){
 		this.element = $("<articlecontainer />");
 		this.container = this.element;
+
 		this.tileGroup = new WelcomeWall.TileGroup();
 		this.frontFace = $("<articleface />").addClass("front");
 		this.backFace = $("<articleface />").addClass("back");
+		this.fullArticle = new WelcomeWall.FullArticle();
 		this.articleIframe = $("<iframe />").attr({
 			src: "",
 			height:"90%",
@@ -84,10 +86,18 @@ var WelcomeWall = {
 		});
 		this.backFace.append(this.articleIframe).appendTo(this.element);
 		this.frontFace.append(this.tileGroup.container).appendTo(this.element);
+		this.container.append(this.fullArticle.container);
 
 
 		this.init = function (){
-			this.tileGroup.init();
+			var that = this;
+			this.tileGroup.init(4);
+			this.fullArticle.init();
+			this.evBroker = _.extend({}, Backbone.Events);
+			this.evBroker.on("MORE_BUTTON_CLICKED", function(){
+				that.fullArticle.showFullArticle();
+			});
+			this.tileGroup.broker = this.evBroker;
 		}
 	},
 	ArticlePanel : function(panelNumber){
@@ -105,6 +115,30 @@ var WelcomeWall = {
 			}
 		}
 	},
+	FullArticle : function (){
+		this.container = $("<div />").addClass("faux-article-container");
+		this.frontFaceTop = $("<div />").addClass("faux-article-face-top");
+		this.frontFaceFrontFace = $("<div />").addClass("front");
+		this.frontFaceBackFace = $("<div />").addClass("back");
+		this.frontFaceBottom = $("<div />").addClass("faux-article-face-bottom");
+		this.container.append(this.frontFaceBottom);
+		this.container.append(this.frontFaceTop);
+		
+		this.tileGroup1 = new WelcomeWall.TileGroup();
+		this.tileGroup2 = new WelcomeWall.TileGroup();
+
+		this.init = function (){
+			this.tileGroup1.init(2);
+			this.tileGroup2.init(2);
+			
+			//this.frontFaceBottom.append(this.tileGroup2.container);
+			this.frontFaceTop.append(this.frontFaceBackFace);
+			this.frontFaceTop.append(this.frontFaceFrontFace);
+			
+			
+			this.frontFaceFrontFace.append(this.tileGroup1.container);
+		}
+	},
 
 	
 	
@@ -114,6 +148,20 @@ var WelcomeWall = {
 		this.panel2.init();
 	}
 
+}
+
+WelcomeWall.Article.prototype.showFullArticle = function(){
+
+}
+
+WelcomeWall.FullArticle.prototype.showFullArticle = function(){
+	this.container.show();
+	this.frontFaceTop.transition({
+		rotateX: '-180deg',
+		perspective: '1000px'
+	}, 1000, function (){
+		//that.broker.trigger("TILE_FLIP_COMPLETE", that.tileNumber);
+	});
 }
 
 WelcomeWall.TileGroup.prototype.flipTile = function (tileNumber){
@@ -133,12 +181,14 @@ WelcomeWall.TileGroup.prototype.activateArticleNavButtons = function (){
 	this.tileReadMoreButton.fadeIn();
 	this.tileCloseButton.fadeIn();
 	this.tileCloseButton.click(bindContext(this.closeButtonClickHandler, this, this.currentTile));
+	this.tileReadMoreButton.click(bindContext(this.moreButtonClickHandler, this, this.currentTile));
 }
 
 WelcomeWall.TileGroup.prototype.deactivateArticleNavButtons = function (){
 	this.tileReadMoreButton.hide();
 	this.tileCloseButton.hide();
 	this.tileCloseButton.unbind();
+	this.tileReadMoreButton.unbind();
 }
 
 WelcomeWall.TileGroup.prototype.activateNavButtons = function (){
@@ -192,10 +242,22 @@ WelcomeWall.TileGroup.prototype.previousButtonClickHandler = function (){
 }
 
 WelcomeWall.TileGroup.prototype.closeButtonClickHandler = function(){
-
 	this.deactivateArticleNavButtons();
 	this.deactivateNavButtons();
 	this.resetCurrentTile();
+}
+
+WelcomeWall.TileGroup.prototype.moreButtonClickHandler = function(){
+
+	this.deactivateArticleNavButtons();
+	this.deactivateNavButtons();
+	this.groupEvents.on("TILE_RESET:NAV", bindContext(this.moreButtonEventHandler, this));
+	this.resetCurrentTile();
+}
+
+WelcomeWall.TileGroup.prototype.moreButtonEventHandler = function(){
+	this.groupEvents.off("TILE_RESET:NAV");
+	this.broker.trigger("MORE_BUTTON_CLICKED");
 }
 
 WelcomeWall.TileGroup.prototype.goToNextTile = function (){

@@ -2,17 +2,27 @@
 
 */
 
+var articleSources = [{"title":"Take a video tour of Cree’s LED Components and Modules Booth at Lightfair 2012","url_title":"take-a-video-tour-of-crees-led-components-and-modules-booth-at-lightfair-20","entry_id":"3","channel_id":"1","author_id":"1","status":"open","entry_date":"1336715216000","edit_date":"1348270917000","expiration_date":"","feedbody":"<p>We&#8217;ve got a lot of products and information about our services packed into our LED Components and Modules booth this year. Cree Product Marketing Manager Paul Scheidt shows you a few of this year&#8217;s highlights, including:<\/p>\n<ul>\n<li><a href=\"http:\/\/www.cree.com\/led-components-and-modules\/products\/modules\/non-integrated\/lmh2\">LMH2 Modules<\/a><\/li>\n<li><a href=\"http:\/\/www.cree.com\/led-components-and-modules\/products\/xlamp\/arrays-directional\/xlamp-mtg2\">XLamp MT-G2 LED<\/a><\/li>\n<li><a href=\"http:\/\/www.cree.com\/led-components-and-modules\/tools-and-support\/cree-services\">Cree Services and TEMPO testing<\/a><\/li>\n<li><a href=\"http:\/\/www.cree.com\/led-components-and-modules\/products\/xlamp\/reference-designs\">Cree Reference Designs<\/a><\/li>\n<\/ul>\n<p><iframe width=\"560\" height=\"315\" src=\"http:\/\/www.youtube.com\/embed\/il1LPVEgfAs\" frameborder=\"0\" allowfullscreen><\/iframe><\/p>\n<img src=\"http:\/\/feeds.feedburner.com\/~r\/CreeLEDRevolutionBlog\/~4\/KNoAGA4GthE\" height=\"1\" width=\"1\"\/>"},{"title":"Here’s what Cree lighting is showcasing at Lightfair 2012","url_title":"heres-what-cree-lighting-is-showcasing-at-lightfair-2012","entry_id":"6","channel_id":"1","author_id":"1","status":"open","entry_date":"1336531316000","edit_date":"1348270917000","expiration_date":"","feedbody":"<p>For the first time, Cree’s lighting booth at Lightfair will feature both indoor <em>and<\/em> outdoor lighting, and you won’t want to miss either.<\/p>\n<p>For many of you, Lightfair offers the first chance to see the outdoor lighting products Cree launched since acquiring Ruud Lighting last year. And boy has it been a busy year.<\/p>\n<p>Some of the outdoor LED lighting products we’ll be showcasing at our booth #3008  include:<\/p>\n<ul>\n<li><strong>Cree XSP Series Street Light:<\/strong> Our most affordable and efficient LED street light, <a href=\"http:\/\/www.cree.com\/XSP\">the XSP Series<\/a> is designed to speed payback to municipalities. It’s the high-pressure sodium street light buster, using nearly 50 percent less energy than that wasteful, traditional street light; and it’s designed to last three times longer too.  Come see why this LED street light is the ideal choice for cities and municipalities looking to save money and resources.<\/li>\n<\/ul>\n<ul>\n<li><strong>Aeroblades: <\/strong>If you want to see where industry-leading LED innovation and high design meet, stop by our booth and head straight for our <a title=\"Cree Aeroblades \" href=\"http:\/\/www.cree.com\/lighting\/products\/outdoor\/area\/aeroblades\">Aeroblades<\/a> display. Designed and engineered with Speirs + Major, one of the world’s leading lighting design firms, the Aeroblades luminaire series takes a bold approach to architectural street, area and security lighting. You’ll know why as soon as you see it.<\/li>\n<\/ul>\n<ul>\n<li><strong>Cree Traditional Post-Top LED Upgrade Kit:<\/strong> If you’re coming to Lightfair looking for a way to lower operating costs for outdoor lighting, be sure to check out our new <a title=\"Cree LED Upgrade Kit\" href=\"http:\/\/www.cree.com\/lighting\/products\/outdoor\/streetlights\/traditional-post-top-led-upgrade-kit\">LED Upgrade Kit<\/a>. Our Upgrade Kit seamlessly transforms existing, inefficient luminaires into energy-efficient lighting, low-maintenance LED luminaires.<\/li>\n<\/ul>\n<p><center><div id=\"attachment_1579\" class=\"wp-caption aligncenter\" style=\"width: 545px\"><img class=\"size-large wp-image-1579 \" src=\"http:\/\/www.creeledrevolution.com\/blog\/wp-content\/uploads\/2012\/05\/IMG_2219-764x1024.jpg\" alt=\"The Cree lighting booth was still under construction Tuesday afternoon.\" width=\"535\" height=\"717\" \/><p class=\"wp-caption-text\">The Cree lighting booth was still under construction Tuesday afternoon.<\/p><\/div><\/center><\/p>\n<p>We’ll also be featuring a variety of our indoor LED lighting products at Lightfair including:<\/p>\n<ul>\n<li><strong>Cree CS Series LED Linear Luminaire:<\/strong> Our new high-efficacy suspended linear luminaire offers fast payback to low bay lighting applications. Using 40 to 50 percent less energy than comparable linear fluorescents, the <a title=\"Cree CS18\" href=\"http:\/\/www.cree.com\/lighting\/products\/indoor\/industrial\/cs18\">CS Series LED Linear Luminaire<\/a> delivers an unmatched performance combination of up to 120 lumens per watt, 90 CRI and 75,000 hour lifetime. This is unlike any other linear fluorescent or LED lighting solution on the market!<\/li>\n<\/ul>\n<ul>\n<li><strong>Cree CR Series LED Troffer:<\/strong> Our CR Series made its debut at last year’s Lightfair in Philadelphia. This year it’s bigger, better, faster and even more affordable. The new <a title=\"Cree CR Troffer\" href=\"http:\/\/crseries.creeledlighting.com\/\">CR Troffer<\/a> addresses more applications and eliminates the use of antiquated fluorescent technology in new or retrofit commercial and industrial settings. We also recently announced new pricing to drive even faster payback for building contractors, designers and owners.<\/li>\n<\/ul>\n<ul>\n<li><strong>Cree SR Series Architectural Downlight: <\/strong> Just this month we announced an extension in our family of the world’s most efficient downlights, with our revolutionary <a title=\"Cree SR Series\" href=\"http:\/\/www.cree.com\/lighting\/products\/indoor\/architectural\/sr6-downlight\">SR Series LED Architectural Downlight<\/a>. This six-inch LED architectural luminaire features modern design, high color quality and double the efficacy of fluorescent technology. It uses 85 percent less energy and is designed to last up to 30 times longer than comparable incandescent lighting! The Cree lighting booth isn’t the only place in Vegas to see this downlight in action. Stop by our booth and ask about our installation at Caesars Palace!<\/li>\n<\/ul>\n<ul>\n<li><strong>Cree KR Series LED Downlight:<\/strong> After you see our new <a title=\"Cree KR Series\" href=\"http:\/\/www.cree.com\/lighting\/products\/indoor\/downlights-us\/kr-series\">KR Series<\/a>, you may be hard-pressed to come up with a reason to specify a CFL downlight again. This is the industry’s first LED downlight designed to deliver specification-grade lighting performance with pricing to match the everyday price of incumbent technology fluorescent grade downlights. With initial models designed to replace 18 and 26 watt fluorescent downlights, the KR Series is at least 35 percent more efficient than incumbent fluorescents and is designed to last up to five times longer.<\/li>\n<\/ul>\n<p>Of course, that’s not all. We’ve got even more outdoor and indoor LED lighting options illuminating our Lightfair booth this year! Come by and see them all, or make plans to get a personal booth tour during our LED Lighting Tweetup at 2:30 p.m. Thursday, May 10 at Booth #3008.<\/p>\n<img src=\"http:\/\/feeds.feedburner.com\/~r\/CreeLEDRevolutionBlog\/~4\/qn55dUSiCL4\" height=\"1\" width=\"1\"\/>"},{"title":"Earth Day 2012: Am I Doing Everything I Can To Save Energy?","url_title":"earth-day-2012-am-i-doing-everything-i-can-to-save-energy","entry_id":"8","channel_id":"1","author_id":"1","status":"open","entry_date":"1334954996000","edit_date":"1348270917000","expiration_date":"","feedbody":"<p><strong>Today’s guest blog post is by Timothy Henning, Cree’s ENERGY STAR program manager.<\/strong><\/p>\n<p>Earth Day offers us all a reminder to ask ourselves: Am I doing all I can to save energy? Is there more I could be doing? Chances are there are a few easy steps you could take right now to conserve more energy in your day-to-day life.<\/p>\n<p>Not sure what? The U.S. Environmental Protection Agency (EPA) offers a number of programs that make it easier to save money and reduce greenhouse gas emissions.  One of those programs is ENERGY STARs Across America.<\/p>\n<p>Finding out what habits you can change or even what habits your neighbors are changing is as easy as clicking a button. The EPA website contains an interactive “ENERGY STARs Across America” map that highlights energy-saving educational events being held across America that you can participate in. This interactive <a href=\"https:\/\/www.energystar.gov\/index.cfm?fuseaction=globalwarming.showMap\">map<\/a> also helps you visualize how many people and organizations around the world are participating in the movement.<\/p>\n<p><center><img class=\"aligncenter size-medium wp-image-1549\" title=\"ENERGY STAR map\" src=\"http:\/\/www.creeledrevolution.com\/blog\/wp-content\/uploads\/2012\/04\/ENERGY-STAR-map-300x211.png\" alt=\"ENERGY STAR map\" width=\"300\" height=\"211\" \/><\/center><\/p>\n<p>If you’re not interested in attending an event, you can still make a change in the comfort of your own home by taking the ENERGY STAR Pledge. When you pledge, you are making a commitment to save energy and money, and to help protect the environment by taking energy-saving actions in your home, such as:<\/p>\n<ul>\n<li> Changing a light to an ENERGY STAR-qualified LED model. Cree has qualified over 48 unique SKUs through the ENERGY STAR program to date!  You can visit our <a href=\"http:\/\/www.cree.com\/lighting\/products\">website<\/a> to see the wide variety of lighting products that Cree offers.  Additionally, you can go to your nearest Home Depot and check out the ENERGY STAR-qualified EcoSmart 4” and 6” recessed LED downlights.<\/li>\n<li>Enabling your computer to power down when not in use.<\/li>\n<li> Installing and using a programmable thermostat correctly with pre-programmed settings.<\/li>\n<li> Choosing products that have earned the ENERGY STAR rating, and more.<\/li>\n<\/ul>\n<p>To date, more than 2.8 million people nationwide have pledged to take small, energy-saving steps that can change the world. If every American household took part in the pledge, we would save $24 billion in annual energy costs and prevent greenhouse gases equivalent to the emissions from 27 million cars.<\/p>\n<p>Take the ENERGY STAR Pledge now, and join with millions of Americans who are taking small steps that make a big difference in helping to prevent climate change. Thank you for your support!<\/p>\n<img src=\"http:\/\/feeds.feedburner.com\/~r\/CreeLEDRevolutionBlog\/~4\/tiOAPe5B_PM\" height=\"1\" width=\"1\"\/>"}]
+//var thumbnailSources = articleSources.replace(/<iframe[a-zA-Z0-9\s\=\\\"\:\/\.]*><\\\/iframe>/g, "");
 var bindContext = function (fn, context, arguments) {
 	if(arguments){
-		console.log("Binder Log");
-		console.log(arguments);
-		console.log(context);
-		console.log(fn);
+		//console.log("Binder Log");
+		//console.log(arguments);
+		//console.log(context);
+		//console.log(fn);
 	}
 	return function () {
 		fn.apply(context, arguments);
 	};
 };
+
+var preProcessThumbContent = function (content){
+	console.log("Removing Stuff");
+	//console.log(content);
+	//console.log(content.(/<iframe[a-zA-Z0-9\s\=\\\"\:\/\.><]*iframe>/));
+	//var myContent = content.replace(/<iframe[a-zA-Z0-9\s\=\\\"\:\/\.><]*iframe>/g, "");
+	return content;
+}
 
 var WelcomeWall = {
 	Tile : function(tileNumber, empty){
@@ -23,9 +33,23 @@ var WelcomeWall = {
 		this.frontFace = $("<face />").addClass("front").appendTo(this.element);
 		this.backFace = $("<face />").addClass("back").appendTo(this.element);
 
-		this.init = function (){
+		this.init = function (sourceNumber){
+			this.sourceNumber = sourceNumber;
+			var tileInfo = articleSources[sourceNumber];
 			//console.log("Tile Init");
 			this.container.click(bindContext(this.clickHandler, this));
+			if(tileInfo){
+				//console.log(tileInfo.title);
+				var thumbnailTitle = $("<h3 />").html(tileInfo.title);
+				thumbnailTitle.appendTo(this.frontFace);
+				var tilefacecontent = $("<div />").addClass("tilefacecontent");
+				tilefacecontent.appendTo(this.backFace);
+				var expandedTitle = $("<h3 />").html(tileInfo.title);
+				expandedTitle.appendTo(tilefacecontent);
+				var expandedContent = $("<div />").addClass("expandedcontent");
+				expandedContent.html(preProcessThumbContent(tileInfo.feedbody));
+				expandedContent.appendTo(tilefacecontent);
+			}
 		}
 	},
 	TileGroup : function(){
@@ -56,7 +80,7 @@ var WelcomeWall = {
 				tile.broker = this.groupEvents;
 				this.tiles[x] = tile;
 				this.element.append(tile.container);
-				tile.init();
+				tile.init(x-1);
 			}
 			this.tileReadMoreButton = $("<div />").attr({"class":"article-button readmore"});
 			this.tileCloseButton = $("<div />").attr({"class":"article-button close"});
@@ -94,8 +118,11 @@ var WelcomeWall = {
 			this.tileGroup.init(4);
 			this.fullArticle.init();
 			this.evBroker = _.extend({}, Backbone.Events);
-			this.evBroker.on("MORE_BUTTON_CLICKED", function(){
-				that.fullArticle.showFullArticle();
+			this.evBroker.on("MORE_BUTTON_CLICKED", function(e){
+				console.log("More Event")
+				console.log(e);
+				//var sourceNumber = 
+				that.fullArticle.showFullArticle((parseInt(e)-1));
 			});
 			this.tileGroup.broker = this.evBroker;
 		}
@@ -154,7 +181,10 @@ WelcomeWall.Article.prototype.showFullArticle = function(){
 
 }
 
-WelcomeWall.FullArticle.prototype.showFullArticle = function(){
+WelcomeWall.FullArticle.prototype.showFullArticle = function(sourceNumber){
+	console.log("Show Full Article");
+	console.log(sourceNumber);
+	this.insertContent(sourceNumber);
 	this.container.show();
 	this.frontFaceTop.transition({
 		rotateX: '-180deg',
@@ -162,6 +192,15 @@ WelcomeWall.FullArticle.prototype.showFullArticle = function(){
 	}, 1000, function (){
 		//that.broker.trigger("TILE_FLIP_COMPLETE", that.tileNumber);
 	});
+}
+
+WelcomeWall.FullArticle.prototype.insertContent = function(sourceNumber){
+	console.log(sourceNumber);
+	var source = articleSources[sourceNumber];
+	var headLine = $("<h3 />").html(source.title);
+	this.frontFaceBottom.append(headLine);
+	var content = $("<div />").html(source.feedbody);
+	this.frontFaceBackFace.append(content);
 }
 
 WelcomeWall.TileGroup.prototype.flipTile = function (tileNumber){
@@ -251,13 +290,15 @@ WelcomeWall.TileGroup.prototype.moreButtonClickHandler = function(){
 
 	this.deactivateArticleNavButtons();
 	this.deactivateNavButtons();
-	this.groupEvents.on("TILE_RESET:NAV", bindContext(this.moreButtonEventHandler, this));
+	this.groupEvents.on("TILE_RESET:NAV", bindContext(this.moreButtonEventHandler, this, [this.sourceNumber]));
 	this.resetCurrentTile();
 }
 
-WelcomeWall.TileGroup.prototype.moreButtonEventHandler = function(){
+WelcomeWall.TileGroup.prototype.moreButtonEventHandler = function(info){
+	//console.log("More Event");
 	this.groupEvents.off("TILE_RESET:NAV");
-	this.broker.trigger("MORE_BUTTON_CLICKED");
+	//console.log(info);
+	this.broker.trigger("MORE_BUTTON_CLICKED", info);
 }
 
 WelcomeWall.TileGroup.prototype.goToNextTile = function (){

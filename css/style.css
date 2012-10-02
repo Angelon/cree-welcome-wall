@@ -34,7 +34,7 @@ html { font-size: 100%; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 10
 
 html, button, input, select, textarea { font-family: sans-serif; color: #222; }
 
-body { margin: 0; font-size: 1em; line-height: 1.4; }
+body { margin: 0; font-size: 1em; line-height: 1.4; overflow: hidden; }
 
 /*
  * Remove text-shadow in selection highlight: h5bp.com/i
@@ -234,6 +234,7 @@ div[role="panel-1"] {
   -webkit-perspective: 1200;
   perspective-origin: 1200;
   display: block;
+  overflow: hidden;
 }
 
 div[role="panel-2"] {
@@ -724,12 +725,64 @@ articleface div {
   position: absolute;
   top: 200px;
   left: 150px;
+  background: #000;
 }
 
 .flickr-image {
   width: 1561px;
   height: 737px;
-  background: url("../img/flickr-feed-test.png");
+  background: #000;
+  overflow: hidden;
+  text-align: center;
+}
+
+.flickr-image-overlay {
+  position: absolute;
+  background: #000;
+  width:100%;
+  text-align: center;
+  height: 737px;
+  overflow: hidden;
+  display: none;
+}
+
+.flickr-image-container {
+  position: absolute;
+  background: #000;
+  width:100%;
+  text-align: center;
+  height: 737px;
+  overflow: hidden;
+}
+
+.flickr-image-preloader {
+  position: absolute;
+  background: #000;
+  width:100%;
+  text-align: center;
+  height: 737px;
+  overflow: hidden;
+  top: 737px;
+}
+
+.flickr-image-button {
+  position: absolute;
+  width: 71px;
+  height: 72px;
+  cursor: pointer;
+  display: none;
+}
+
+.flickr-next-image-button {
+  background: url("../img/nav-arrow-button-right.png");
+  top: 600px;
+  left: 850px;
+}
+
+.flickr-previous-image-button {
+  background: url("../img/nav-arrow-button-left.png");
+  top: 600px;
+  left: 650px;
 }
 
 
@@ -787,6 +840,7 @@ articleface div {
   height: 560px;
   width: 100%;
   display: block;
+  overflow: hidden;
 }
 
 .faux-article-face-bottom {
@@ -797,7 +851,34 @@ articleface div {
   height: 375px;
   width: 100%;
   display: block;
+  overflow: hidden;
 }
+
+.faux-article-face-top .full-article-content-container {
+  position: absolute;
+  top: -375px;
+}
+
+.faux-article-face-bottom .full-article-content-container {
+  position: absolute;
+  
+
+}
+
+.full-article-content-container {
+  margin: 20px 70px 30px 40px;
+  padding: 10px 30px 15px 20px;
+  background: #cfd7d9;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+.full-article-content-container h3 {
+  font-size: 40px;
+
+}
+
+
 
 
 

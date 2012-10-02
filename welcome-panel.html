@@ -111,6 +111,8 @@
   <script src="js/plugins.js"></script>
   <script src="js/script.js"></script>
   <script src="js/libs/jquery.transitions.js"></script>
+  <script src="js/libs/underscore.js"></script>
+  <script src="js/libs/backbone.js"></script>
   <!-- end scripts -->
 
   <!-- Asynchronous Google Analytics snippet. Change UA-XXXXX-X to be your site's ID.
@@ -129,6 +131,16 @@
       $(".glass-panel").each(function (){
         bindGlassPanel($(this));
       });
+
+      //parseRSS("http://api.flickr.com/services/feeds/groups_pool.gne?id=554802@N25&lang=en-us&format=rss_200", displayFlickrFeed);
+
+      //Get JSON from User
+      //$.getJSON("http://api.flickr.com/services/rest/?method=flickr.people.getPublicPhotos&user_id=87646671@N07&api_key=3bdd28c7cb805fc97e345cfc6f4bf0b3&format=json&=?");
+
+      //Get JSON from Group
+      //$.getJSON("http://api.flickr.com/services/rest/?method=flickr.groups.pools.getPhotos&group_id=554802@N25&api_key=3bdd28c7cb805fc97e345cfc6f4bf0b3&format=json&=?");
+      WelcomeWall.init(true, false);
+      WelcomeWall.flickrEventsHandler.getUserPublicPhotos();
 
     });
   </script>

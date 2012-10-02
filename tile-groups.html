@@ -66,7 +66,7 @@
     g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
     s.parentNode.insertBefore(g,s)}(document,'script'));
     $(document).ready(function (){
-      WelcomeWall.init();
+      WelcomeWall.init(false, true);
 
       $("tile").click(function (){
         //flipTile($(this));

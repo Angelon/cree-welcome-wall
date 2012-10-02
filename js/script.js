@@ -63,6 +63,9 @@ var WelcomeWall = {
 				expandedContent.html(preProcessThumbContent(tileInfo.feedbody));
 				expandedContent.appendTo(tilefacecontent);
 			}
+			else {
+
+			}
 		}
 	},
 	TileGroup : function(){
@@ -166,6 +169,7 @@ var WelcomeWall = {
 		
 		this.tileGroup1 = new WelcomeWall.TileGroup();
 		this.tileGroup2 = new WelcomeWall.TileGroup();
+		this.canvasId = 0;
 
 		this.init = function (){
 			this.tileGroup1.init(2);
@@ -198,6 +202,9 @@ var WelcomeWall = {
 			this.nextImageButton = $("<div />").addClass("flickr-image-button").addClass("flickr-next-image-button");
 			$(".flickr-panel .flickr-image").append(this.previousImageButton);
 			$(".flickr-panel .flickr-image").append(this.nextImageButton);
+			this.captionPanel = $("<div />").addClass("flickr-caption-panel");
+			$(".flickr-panel .flickr-image").append(this.captionPanel);
+
 		}
 	},
 	
@@ -253,6 +260,7 @@ WelcomeWall.FlickrEventsHandler.prototype.deactivateNavButtons = function (){
 	this.nextImageButton.fadeOut();
 	this.nextImageButton.unbind();
 	this.previousImageButton.unbind();
+	this.deactivateCaptionPanel();
 }
 
 WelcomeWall.FlickrEventsHandler.prototype.removeEventHandler = function (event){
@@ -276,6 +284,13 @@ WelcomeWall.FlickrEventsHandler.prototype.getPhotoSizes = function (photo_id, ca
 	this.attachEventHandler("Flickr_API_CALL_COMPLETE", callback || this.getPhotoSizesHandler);
 	$.getJSON("http://api.flickr.com/services/rest/?method=flickr.photos.getSizes&photo_id=" + photoId + "&api_key=3bdd28c7cb805fc97e345cfc6f4bf0b3&format=json&=?");
 	this.deactivateNavButtons();
+}
+
+WelcomeWall.FlickrEventsHandler.prototype.getPhotoInfo = function (photo_id, callback){
+	var photoId = photo_id || "8043778857";
+	this.attachEventHandler("Flickr_API_CALL_COMPLETE", callback || this.getPhotoInfoHandler);
+	$.getJSON("http://api.flickr.com/services/rest/?method=flickr.photos.getInfo&photo_id=" + photoId + "&api_key=3bdd28c7cb805fc97e345cfc6f4bf0b3&format=json&=?");
+	//this.deactivateNavButtons();
 }
 
 WelcomeWall.FlickrEventsHandler.prototype.getPublicPhotosHandler = function (data){
@@ -316,6 +331,7 @@ WelcomeWall.FlickrEventsHandler.prototype.getPhotoSizesHandler = function (data)
 			that.imageContainer.append(newImage2);
 			that.imageOverlay.hide();
 			that.activateNavButtons();
+			that.getPhotoInfo(that.imagesList[that.currentImage].id);
 		});
         })
         .each(function() {
@@ -337,6 +353,22 @@ WelcomeWall.FlickrEventsHandler.prototype.getPhotoSizesHandler = function (data)
 		this.broker.trigger("NO_SIZE_FOUND");
 	}
 	
+}
+
+WelcomeWall.FlickrEventsHandler.prototype.getPhotoInfoHandler = function (data) {
+	console.log("getPhotoInfoHandler");
+	console.log(data);
+	this.removeEventHandler("Flickr_API_CALL_COMPLETE");
+	this.captionPanel.html(data.photo.description._content);
+	this.activateCaptionPanel();
+}
+
+WelcomeWall.FlickrEventsHandler.prototype.activateCaptionPanel = function(){
+	this.captionPanel.fadeIn();
+}
+
+WelcomeWall.FlickrEventsHandler.prototype.deactivateCaptionPanel = function(){
+	this.captionPanel.fadeOut();
 }
 
 WelcomeWall.FlickrEventsHandler.prototype.getBestPhotoSize = function(sizes){
@@ -416,16 +448,39 @@ WelcomeWall.FullArticle.prototype.showFullArticle = function(sourceNumber){
 WelcomeWall.FullArticle.prototype.insertContent = function(sourceNumber){
 	console.log(sourceNumber);
 	var source = articleSources[sourceNumber];
-	var headLine = $("<h3 />").html(source.title);
-	var content = $("<div />").html(source.feedbody);
-	var headLine2 = $("<h3 />").html(source.title);
-	var content2 = $("<div />").html(source.feedbody);
-	var topContentDiv = $("<div />").addClass("full-article-content-container").append(headLine).append(content);
-	var bottomContentDiv = $("<div />").addClass("full-article-content-container").append(headLine2).append(content2);
+	if(source){
+		var headLine = $("<h3 />").html(source.title);
+		var content = $("<div />").html(source.feedbody);
+		var headLine2 = $("<h3 />").html(source.title);
+		var content2 = $("<div />").html(source.feedbody);
+		var topContentDiv = $("<div />").addClass("full-article-content-container").append(headLine).append(content);
+		var bottomContentDiv = $("<div />").addClass("full-article-content-container").append(headLine2).append(content2);
+		this.frontFaceBottom.append(topContentDiv);
+		this.frontFaceBackFace.append(bottomContentDiv);
+	}
+	else {
+		console.log("No Article Soure Found!");
+		
+		var canvasElement1 = $("<canvas />").attr({
+			id:"canvas-"+this.canvasId
+		});
+		this.canvasId++;
+		var canvasElement2 = $("<canvas />").attr({
+			id:"canvas-"+this.canvasId
+		});
+		this.canvasId++;
+		var topContentDiv = $("<div />").addClass("full-article-content-container-pdf").append(canvasElement1);
+		var bottomContentDiv = $("<div />").addClass("full-article-content-container-pdf").append(canvasElement2);
+		this.frontFaceBottom.append(topContentDiv);
+		this.frontFaceBackFace.append(bottomContentDiv);
+		loadPDFDocument(canvasElement1.attr("id"));
+		loadPDFDocument(canvasElement2.attr("id"));
 
-	this.frontFaceBottom.append(topContentDiv);
+	}
 	
-	this.frontFaceBackFace.append(bottomContentDiv);
+
+	
+
 }
 
 WelcomeWall.TileGroup.prototype.flipTile = function (tileNumber){
@@ -581,6 +636,49 @@ WelcomeWall.Tile.prototype.reset = function (){
 }
 
 
+
+function loadPDFDocument(canvasId, url){
+	//
+    // NOTE:
+    // Modifying the URL below to another server will likely *NOT* work. Because of browser
+    // security restrictions, we have to use a file server with special headers
+    // (CORS) - most servers don't support cross-origin browser requests.
+    //
+    var url = url || 'assets/pdf/CaseStudy_MikeWard.pdf';
+
+    //
+    // Disable workers to avoid yet another cross-origin issue (workers need the URL of
+    // the script to be loaded, and dynamically loading a cross-origin script does
+    // not work)
+    //
+    PDFJS.disableWorker = true;
+
+    //
+    // Asynchronous download PDF as an ArrayBuffer
+    //
+    PDFJS.getDocument(url).then(function getPdfHelloWorld(pdf) {
+      //
+      // Fetch the first page
+      //
+      pdf.getPage(1).then(function getPageHelloWorld(page) {
+        var scale = 1.5;
+        var viewport = page.getViewport(scale);
+
+        //
+        // Prepare canvas using PDF page dimensions
+        //
+        var canvas = document.getElementById(canvasId);
+        var context = canvas.getContext('2d');
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        //
+        // Render PDF page into canvas context
+        //
+        page.render({canvasContext: context, viewport: viewport});
+      });
+    });
+}
 
 
 

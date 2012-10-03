@@ -170,8 +170,10 @@ var WelcomeWall = {
 		this.container.append(this.frontFaceTop);
 		this.scrollButtonTop = $("<div />").addClass("scroll-button").addClass("scroll-button-top");
 		this.scrollButtonBottom = $("<div />").addClass("scroll-button").addClass("scroll-button-bottom");
+		this.articleCloseButton = $("<div />").addClass("scroll-button").addClass("close-button").html("Close");
 		this.container.append(this.scrollButtonTop);
 		this.container.append(this.scrollButtonBottom);
+		this.container.append(this.articleCloseButton);
 		
 		this.tileGroup1 = new WelcomeWall.TileGroup();
 		this.tileGroup2 = new WelcomeWall.TileGroup();
@@ -506,16 +508,13 @@ WelcomeWall.FullArticle.prototype.showFullArticle = function(sourceNumber){
 		perspective: '1000px'
 	}, 1000, function (){
 		//that.broker.trigger("TILE_FLIP_COMPLETE", that.tileNumber);
-		that.scrollNumber = 0;
-		that.scrollStop = that.topContentDiv.height() - ($("div[role='panel-2']").height()+50) + 100;
-		console.log($("div[role='panel-2']"));
-		console.log("Window Height: " + $("div[role='panel-2']").height());
-		console.log("Article Height: " + $(that.topContentDiv).height());
-		console.log("Starting Numbers");
-		console.log(that.scrollNumber);
-		console.log(that.scrollStop);
-		that.articleHeight = that.topContentDiv.height();
-		that.activateScrollButtons();
+		if(that.pdf === true){
+			that.showPDF.call(that);
+			that.frontFaceBottom.addClass("pdf");
+		}
+		else {
+			that.setScrollNumbers();
+		}
 	});
 }
 
@@ -533,27 +532,110 @@ WelcomeWall.FullArticle.prototype.insertContent = function(sourceNumber){
 		this.bottomContentDiv = $("<div />").addClass("full-article-content-container").append(topImage2).append(headLine2).append(content2);
 		this.frontFaceBottom.append(this.topContentDiv);
 		this.frontFaceBackFace.append(this.bottomContentDiv);
-		console.log(WelcomeWall);
 		WelcomeWall.flickrEventsHandler.getRandomPhotoForElement(topImage);
 	}
 	else {
 		console.log("No Article Soure Found!");
 		
-		var canvasElement1 = $("<canvas />").attr({
-			id:"canvas-"+this.canvasId
+		this.canvasElement = $("<canvas />").attr({
+			id:"canvas-"+this.canvasId,
+			height:"900"
 		});
 		this.canvasId++;
-		var canvasElement2 = $("<canvas />").attr({
-			id:"canvas-"+this.canvasId
-		});
-		this.canvasId++;
-		this.topContentDiv = $("<div />").addClass("full-article-content-container-pdf").append(canvasElement1);
-		this.bottomContentDiv = $("<div />").addClass("full-article-content-container-pdf").append(canvasElement2);
+		this.topContentDiv = $("<div />").addClass("full-article-content-container-pdf").append(this.canvasElement);
 		this.frontFaceBottom.append(this.topContentDiv);
+		this.bottomContentDiv = $("<div />").addClass("full-article-content-container-pdf");
 		this.frontFaceBackFace.append(this.bottomContentDiv);
-		loadPDFDocument(canvasElement1.attr("id"));
-		loadPDFDocument(canvasElement2.attr("id"));
+		//this.frontFaceBottom.addClass("pdf");
+		this.pdf = true;
+		this.pdfDoc = null;
+        this.pageNum = 1;
+        this.pdfScale = 1.2;
+        this.pdfCtx = document.getElementById(this.canvasElement.attr("id")).getContext('2d');
+		//loadPDFDocument(canvasElement1.attr("id"));
+		//loadPDFDocument(canvasElement2.attr("id"));
 
+	}
+}
+
+WelcomeWall.FullArticle.prototype.showPDF = function(){
+	
+	console.log("Loading PDF");
+	//loadPDFDocument(this.canvasElement.attr("id"), false, this.showPDFComplete, this);
+	this.loadPDF();
+	this.frontFaceTop.hide();
+}
+
+WelcomeWall.FullArticle.prototype.showPDFComplete = function() {
+	//this.setScrollNumbers();
+
+	this.canvasElement.addClass("shadowed");
+}
+
+WelcomeWall.FullArticle.prototype.setScrollNumbers = function() {
+	this.scrollNumber = 0;
+	this.scrollStop = this.topContentDiv.height() - ($("div[role='panel-2']").height()+50) + 100;
+	console.log($("div[role='panel-2']"));
+	console.log($(this.topContentDiv));
+	console.log("Window Height: " + $("div[role='panel-2']").height());
+	console.log("Article Height: " + $(this.topContentDiv).height());
+	console.log("Starting Numbers");
+	console.log(this.scrollNumber);
+	console.log(this.scrollStop);
+	this.articleHeight = this.topContentDiv.height();
+	this.activateScrollButtons();
+}
+
+WelcomeWall.FullArticle.prototype.closeFullArticle = function (){
+	console.log("Hide Full Article");
+	var that = this;
+	this.frontFaceTop.show();
+	this.deactivateScrollButtons();
+	if(this.pdf){
+		this.topContentDiv.hide();
+		this.frontFaceBottom.removeClass("pdf");
+	}
+	this.frontFaceTop.transition({
+		rotateX: '0deg',
+		perspective: '1000px'
+	}, 1000, function (){
+		that.frontFaceBottom.html("");
+		that.frontFaceBackFace.html("");
+		that.container.hide();
+	});
+}
+
+WelcomeWall.FullArticle.prototype.activatePDFButtons = function (){
+	var that = this;
+	this.articleCloseButton.unbind();
+	this.scrollButtonTop.unbind();
+	this.scrollButtonBottom.unbind();
+
+	this.articleCloseButton.click(function (){
+		that.closeFullArticle();
+	});
+	this.articleCloseButton.fadeIn();
+	if(this.pageNum <= 1){
+		this.scrollButtonTop.fadeOut();
+		this.scrollButtonTop.unbind();
+	}
+	else{
+		console.log("Showing Top Scroll Button");
+		this.scrollButtonTop.fadeIn();
+		this.scrollButtonTop.click(function(){
+			that.getPreviousPDFPage();
+		});
+	}
+
+	if(this.pageNum >= this.pdfDoc.numPages){
+		this.scrollButtonBottom.fadeOut();
+	}
+	else {
+		console.log("Showing Bottom Scroll Button");
+		this.scrollButtonBottom.fadeIn();
+		this.scrollButtonBottom.click(function(){
+			that.getNextPDFPage();
+		});
 	}
 }
 
@@ -562,9 +644,14 @@ WelcomeWall.FullArticle.prototype.activateScrollButtons = function(){
 	//console.log(this.scrollStart);
 	//console.log(this.scrollNumber);
 	//console.log(this.articleHeight);
-
+	this.articleCloseButton.unbind();
 	this.scrollButtonTop.unbind();
 	this.scrollButtonBottom.unbind();
+
+	this.articleCloseButton.click(function (){
+		that.closeFullArticle();
+	});
+	this.articleCloseButton.fadeIn();
 	if(this.scrollNumber <= 0){
 		this.scrollButtonTop.fadeOut();
 		this.scrollButtonTop.unbind();
@@ -589,6 +676,15 @@ WelcomeWall.FullArticle.prototype.activateScrollButtons = function(){
 	}
 }
 
+WelcomeWall.FullArticle.prototype.deactivateScrollButtons = function (){
+	this.articleCloseButton.unbind();
+	this.scrollButtonTop.unbind();
+	this.scrollButtonBottom.unbind();
+	this.articleCloseButton.fadeOut();
+	this.scrollButtonTop.fadeOut();
+	this.scrollButtonBottom.fadeOut();
+}
+
 WelcomeWall.FullArticle.prototype.scrollArticleDown = function(){
 	//console.log(this.topContentDiv.height());
 	//console.log(this.topContentDiv.offset().top);
@@ -597,8 +693,14 @@ WelcomeWall.FullArticle.prototype.scrollArticleDown = function(){
 	//var space = $(window).height() - (this.topContentDiv.offset().top + this.topContentDiv.height());
 	//console.log(space);
 	var scrollAmount = 400;
-	this.topContentDiv.animate({top: "-="+scrollAmount});
-	this.bottomContentDiv.animate({top: "-="+scrollAmount});
+	if(this.topContentDiv){
+		this.topContentDiv.animate({top: "-="+scrollAmount});
+	}
+	if(this.bottomContentDiv){
+		this.bottomContentDiv.animate({top: "-="+scrollAmount});
+	}
+	
+	
 	this.scrollNumber +=scrollAmount;
 	this.activateScrollButtons();
 }
@@ -613,10 +715,77 @@ WelcomeWall.FullArticle.prototype.scrollArticleUp = function(){
 	///var space = $(window).height() - (this.topContentDiv.offset().top + this.topContentDiv.height());
 	//console.log(space);
 	var scrollAmount = 400;
-	this.topContentDiv.animate({top: "+="+scrollAmount});
-	this.bottomContentDiv.animate({top: "+="+scrollAmount});
+	if(this.topContentDiv){
+		this.topContentDiv.animate({top: "+="+scrollAmount});
+	}
+	if(this.bottomContentDiv){
+		this.bottomContentDiv.animate({top: "+="+scrollAmount});
+	}
+	
+	
 	this.scrollNumber -=scrollAmount;
 	this.activateScrollButtons();
+}
+
+WelcomeWall.FullArticle.prototype.loadPDF = function(url, callBack){
+	console.log("Loadng PDF...");
+	var that = this;
+	this.pdfURL = url || 'assets/pdf/CaseStudy_MikeWard.pdf';
+	console.log(this.pdfURL);
+	PDFJS.disableWorker = true;
+
+	PDFJS.getDocument(this.pdfURL).then(function getPdfHelloWorld(_pdfDoc) {
+      that.pdfDoc = _pdfDoc;
+      	that.showPDFComplete.call(that);
+      
+      that.renderPDFPage(that.pageNum);
+    });
+}
+
+WelcomeWall.FullArticle.prototype.renderPDFPage = function(num){
+	// Using promise to fetch the page
+	console.log("Rendering PDF Page: " + num);
+	var that = this;
+	console.log(this.pdfDoc);
+      this.pdfDoc.getPage(num).then(function(page) {
+      	console.log(page);
+        var viewport = page.getViewport(that.pdfScale);
+        var canvas = document.getElementById(that.canvasElement.attr("id"));
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+        that.topContentDiv.width(canvas.width + "px");
+        that.topContentDiv.height(canvas.height + "px");
+
+        console.log(that.pdfCtx);
+        console.log(that.canvasElement.attr("id"));
+
+        // Render PDF page into canvas context
+        var renderContext = {
+          canvasContext: canvas.getContext('2d'),
+          viewport: viewport
+        };
+        page.render(renderContext);
+
+		that.activatePDFButtons();
+      });
+
+      // Update page counters
+      //document.getElementById('page_num').textContent = pageNum;
+      //document.getElementById('page_count').textContent = pdfDoc.numPages;
+}
+
+WelcomeWall.FullArticle.prototype.getNextPDFPage = function(){
+	if (this.pageNum >= this.pdfDoc.numPages)
+        return;
+      this.pageNum++;
+      this.renderPDFPage(this.pageNum);
+}
+
+WelcomeWall.FullArticle.prototype.getPreviousPDFPage = function(){
+	if (this.pageNum <= 1)
+        return;
+      this.pageNum--;
+      this.renderPDFPage(this.pageNum);
 }
 
 WelcomeWall.TileGroup.prototype.flipTile = function (tileNumber){
@@ -773,7 +942,7 @@ WelcomeWall.Tile.prototype.reset = function (){
 
 
 
-function loadPDFDocument(canvasId, url){
+function loadPDFDocument(canvasId, url, callBack, callBackContext){
 	//
     // NOTE:
     // Modifying the URL below to another server will likely *NOT* work. Because of browser
@@ -805,13 +974,14 @@ function loadPDFDocument(canvasId, url){
         //
         var canvas = document.getElementById(canvasId);
         var context = canvas.getContext('2d');
-        canvas.height = viewport.height;
+        //canvas.height = viewport.height;
         canvas.width = viewport.width;
 
         //
         // Render PDF page into canvas context
         //
         page.render({canvasContext: context, viewport: viewport});
+        callBack.call(callBackContext);
       });
     });
 }

@@ -231,10 +231,9 @@ footer {
 div[role="panel-1"] {
   height: 935px;
   background: url("../img/main-bg-1.png");
-  -webkit-perspective: 1200;
-  perspective-origin: 1200;
   display: block;
   overflow: hidden;
+  
 }
 
 div[role="panel-2"] {
@@ -259,6 +258,12 @@ tilegroupcontainer {
   left:80px;
   width: 845px;
   height: 350px;
+  -webkit-perspective: 500px;
+  perspective-origin: 500px;
+  -moz-perspective: 500px;
+  
+  
+  -moz-perspective-origin: 150% 150%;
 }
 
 tilegroupcontainer[group="1"]{
@@ -277,10 +282,13 @@ tilegroup {
 tilecontainer {
   display: block;
   position: absolute;
-  -webkit-perspective: 1200;
   -webkit-backface-visibility: hidden;
-  -moz-perspective: 1200;
   -moz-backface-visibility: hidden;
+  -webkit-perspective: 1200px;
+  perspective-origin: 1200px;
+  -moz-perspective: 1200px;
+  
+  -moz-perspective-origin: 150% 150%;
 }
 
 tilecontainer[tile="1"]{
@@ -865,6 +873,10 @@ articleface div {
   background: url("../img/main-bg-1.png");
 }
 
+.faux-article-face-bottom.pdf {
+  height: 100%;
+}
+
 .faux-article-face-top .front {
   position: absolute;
   top: 0px;
@@ -901,6 +913,25 @@ articleface div {
 .faux-article-face-top .full-article-content-container {
   position: absolute;
   top: -375px;
+}
+
+.faux-article-face-top .full-article-content-container-pdf, .faux-article-face-bottom .full-article-content-container-pdf {
+  margin: 0px 20px 0px 20px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  background: #FFF;
+  height: 900px;
+  
+}
+
+.faux-article-face-bottom .full-article-content-container-pdf {
+  margin-top: 20px;
+}
+
+.full-article-content-container-pdf canvas.shadowed {
+  -webkit-box-shadow: 2px 2px 13px rgba(31, 31, 31, 1);
+  -moz-box-shadow:    2px 2px 13px rgba(31, 31, 31, 1);
+  box-shadow:         2px 2px 13px rgba(31, 31, 31, 1);
 }
 
 .faux-article-face-bottom .full-article-content-container {
@@ -961,6 +992,13 @@ articleface div {
 
 .faux-article-container .scroll-button-top  {
   top: 0px;
+  width: 80%;
+}
+
+.faux-article-container .close-button  {
+  top: 0px;
+  right:0px;
+  width: 20%;
 }
 
 

@@ -17,7 +17,7 @@ var bindContext = function (fn, context, arguments) {
 };
 
 var preProcessThumbContent = function (content){
-	console.log("Removing Stuff");
+	//console.log("Removing Stuff");
 	//console.log(content);
 	//console.log(content.(/<iframe[a-zA-Z0-9\s\=\\\"\:\/\.><]*iframe>/));
 	//var myContent = content.replace(/<iframe[a-zA-Z0-9\s\=\\\"\:\/\.><]*iframe>/g, "");
@@ -62,6 +62,8 @@ var WelcomeWall = {
 				var expandedContent = $("<div />").addClass("expandedcontent");
 				expandedContent.html(preProcessThumbContent(tileInfo.feedbody));
 				expandedContent.appendTo(tilefacecontent);
+				var image = $("<div />").addClass("image-container");
+				expandedContent.prepend(image);
 			}
 			else {
 
@@ -166,6 +168,10 @@ var WelcomeWall = {
 		this.frontFaceBottom = $("<div />").addClass("faux-article-face-bottom");
 		this.container.append(this.frontFaceBottom);
 		this.container.append(this.frontFaceTop);
+		this.scrollButtonTop = $("<div />").addClass("scroll-button").addClass("scroll-button-top");
+		this.scrollButtonBottom = $("<div />").addClass("scroll-button").addClass("scroll-button-bottom");
+		this.container.append(this.scrollButtonTop);
+		this.container.append(this.scrollButtonBottom);
 		
 		this.tileGroup1 = new WelcomeWall.TileGroup();
 		this.tileGroup2 = new WelcomeWall.TileGroup();
@@ -179,8 +185,8 @@ var WelcomeWall = {
 			this.frontFaceTop.append(this.frontFaceBackFace);
 			this.frontFaceTop.append(this.frontFaceFrontFace);
 			
-			
 			this.frontFaceFrontFace.append(this.tileGroup1.container);
+
 		}
 	},
 	FlickrEventsHandler : function (){
@@ -189,22 +195,27 @@ var WelcomeWall = {
 		this.imageOverlay;
 		this.imagesList;
 
-		this.init = function(){
+		this.init = function(welcome){
 			this.broker = _.extend({}, Backbone.Events);
-			this.imageOverlay = $("<div />").addClass("flickr-image-overlay");
-			this.imageContainer = $("<div />").addClass("flickr-image-container");
-			this.imagePreloader = $("<div />").addClass("flickr-image-preloader");
-			//$(".flickr-panel .flickr-image").append(this.imagePreloader);
-			$(".flickr-panel .flickr-image").append(this.imageContainer);
-			$(".flickr-panel .flickr-image").append(this.imageOverlay);
-			this.currentImage = 0;
-			this.previousImageButton = $("<div />").addClass("flickr-image-button").addClass("flickr-previous-image-button");
-			this.nextImageButton = $("<div />").addClass("flickr-image-button").addClass("flickr-next-image-button");
-			$(".flickr-panel .flickr-image").append(this.previousImageButton);
-			$(".flickr-panel .flickr-image").append(this.nextImageButton);
-			this.captionPanel = $("<div />").addClass("flickr-caption-panel");
-			$(".flickr-panel .flickr-image").append(this.captionPanel);
-
+			if(welcome){
+				this.imageOverlay = $("<div />").addClass("flickr-image-overlay");
+				this.imageContainer = $("<div />").addClass("flickr-image-container");
+				this.imagePreloader = $("<div />").addClass("flickr-image-preloader");
+				//$(".flickr-panel .flickr-image").append(this.imagePreloader);
+				$(".flickr-panel .flickr-image").append(this.imageContainer);
+				$(".flickr-panel .flickr-image").append(this.imageOverlay);
+				this.currentImage = 0;
+				this.previousImageButton = $("<div />").addClass("flickr-image-button").addClass("flickr-previous-image-button");
+				this.nextImageButton = $("<div />").addClass("flickr-image-button").addClass("flickr-next-image-button");
+				$(".flickr-panel .flickr-image").append(this.previousImageButton);
+				$(".flickr-panel .flickr-image").append(this.nextImageButton);
+				this.captionPanel = $("<div />").addClass("flickr-caption-panel");
+				$(".flickr-panel .flickr-image").append(this.captionPanel);
+			}
+			else {
+				WelcomeWall.flickrEventsHandler.getUserPublicPhotos();
+			}
+			
 		}
 	},
 	
@@ -214,10 +225,12 @@ var WelcomeWall = {
 			this.panel2 = new this.ArticlePanel(2);
 			$(this.panel2.container).insertAfter("header");
 			this.panel2.init();
+			this.flickrEventsHandler = new WelcomeWall.FlickrEventsHandler();
+			this.flickrEventsHandler.init();
 		}
 		if(welcome){
 			this.flickrEventsHandler = new WelcomeWall.FlickrEventsHandler();
-			this.flickrEventsHandler.init();
+			this.flickrEventsHandler.init(true);
 		}
 	}
 
@@ -283,7 +296,7 @@ WelcomeWall.FlickrEventsHandler.prototype.getPhotoSizes = function (photo_id, ca
 	var photoId = photo_id || "8043778857";
 	this.attachEventHandler("Flickr_API_CALL_COMPLETE", callback || this.getPhotoSizesHandler);
 	$.getJSON("http://api.flickr.com/services/rest/?method=flickr.photos.getSizes&photo_id=" + photoId + "&api_key=3bdd28c7cb805fc97e345cfc6f4bf0b3&format=json&=?");
-	this.deactivateNavButtons();
+	
 }
 
 WelcomeWall.FlickrEventsHandler.prototype.getPhotoInfo = function (photo_id, callback){
@@ -390,6 +403,25 @@ WelcomeWall.FlickrEventsHandler.prototype.getBestPhotoSize = function(sizes){
 	return image;
 }
 
+WelcomeWall.FlickrEventsHandler.prototype.getBestPhotoSizeForArticle = function(sizes){
+	//console.log("Finding best size");
+	//console.log(sizes.length-1);
+	var image;
+	for(var x in sizes){
+		var size = parseInt(sizes[x].height);
+		//console.log(sizes[x]);
+		if(size >= 300 && size <= 500){
+			//console.log(x);
+			image = sizes[x];
+			//if(x == sizes.length-1){
+				//return sizes[x];
+			//}
+		}
+	}
+
+	return image;
+}
+
 WelcomeWall.FlickrEventsHandler.prototype.preLoadImages = function (){
 	for(var x in this.imagesList){
 		this.getPhotoSizes(this.imagesList[x].id, this.preLoadImagesEventHandler);
@@ -421,11 +453,42 @@ WelcomeWall.FlickrEventsHandler.prototype.getNextPhoto = function(){
 	console.log("Getting Next Image");
 	this.currentImage++;
 	this.getPhotoSizes(this.imagesList[this.currentImage].id);
+	this.deactivateNavButtons();
 }
 
 WelcomeWall.FlickrEventsHandler.prototype.getPreviousPhoto = function(){
 	this.currentImage--;
 	this.getPhotoSizes(this.imagesList[this.currentImage].id);
+	this.deactivateNavButtons();
+}
+
+WelcomeWall.FlickrEventsHandler.prototype.getRandomPhotoForElement = function(element){ 
+	console.log("getRandomPhotoForElement");
+	var randomImageNumber = Math.floor((Math.random()*this.imagesList.length-1)+1);
+	console.log(randomImageNumber);
+	this.tempElement = element;
+	this.getPhotoSizes(this.imagesList[randomImageNumber].id, this.getRandomPhotoForElementHandler);
+	
+}
+
+WelcomeWall.FlickrEventsHandler.prototype.getRandomPhotoForElementHandler = function(data){
+	console.log("getRandomPhotoForElementHandler");
+
+	var bestSize = this.getBestPhotoSizeForArticle(data.sizes.size);
+	var that = this;
+	//console.log(data.sizes.size[data.sizes.size.length-1]);
+	if(bestSize){
+		console.log("Size Found");
+		var newImage = $("<img />").attr({
+			src : bestSize.source
+		});
+		this.tempElement.append(newImage);
+		this.removeEventHandler("NO_SIZE_FOUND");
+	}
+	else {
+		console.log("No Sizes Found");
+		//this.broker.trigger("NO_SIZE_FOUND");
+	}
 }
 
 WelcomeWall.Article.prototype.showFullArticle = function(){
@@ -435,6 +498,7 @@ WelcomeWall.Article.prototype.showFullArticle = function(){
 WelcomeWall.FullArticle.prototype.showFullArticle = function(sourceNumber){
 	console.log("Show Full Article");
 	console.log(sourceNumber);
+	var that = this;
 	this.insertContent(sourceNumber);
 	this.container.show();
 	this.frontFaceTop.transition({
@@ -442,6 +506,16 @@ WelcomeWall.FullArticle.prototype.showFullArticle = function(sourceNumber){
 		perspective: '1000px'
 	}, 1000, function (){
 		//that.broker.trigger("TILE_FLIP_COMPLETE", that.tileNumber);
+		that.scrollNumber = 0;
+		that.scrollStop = that.topContentDiv.height() - ($("div[role='panel-2']").height()+50) + 100;
+		console.log($("div[role='panel-2']"));
+		console.log("Window Height: " + $("div[role='panel-2']").height());
+		console.log("Article Height: " + $(that.topContentDiv).height());
+		console.log("Starting Numbers");
+		console.log(that.scrollNumber);
+		console.log(that.scrollStop);
+		that.articleHeight = that.topContentDiv.height();
+		that.activateScrollButtons();
 	});
 }
 
@@ -449,14 +523,18 @@ WelcomeWall.FullArticle.prototype.insertContent = function(sourceNumber){
 	console.log(sourceNumber);
 	var source = articleSources[sourceNumber];
 	if(source){
+		var topImage = $("<div />").addClass("top-image");
+		var topImage2 = $("<div />").addClass("top-image");
 		var headLine = $("<h3 />").html(source.title);
 		var content = $("<div />").html(source.feedbody);
 		var headLine2 = $("<h3 />").html(source.title);
 		var content2 = $("<div />").html(source.feedbody);
-		var topContentDiv = $("<div />").addClass("full-article-content-container").append(headLine).append(content);
-		var bottomContentDiv = $("<div />").addClass("full-article-content-container").append(headLine2).append(content2);
-		this.frontFaceBottom.append(topContentDiv);
-		this.frontFaceBackFace.append(bottomContentDiv);
+		this.topContentDiv = $("<div />").addClass("full-article-content-container").append(topImage).append(headLine).append(content);
+		this.bottomContentDiv = $("<div />").addClass("full-article-content-container").append(topImage2).append(headLine2).append(content2);
+		this.frontFaceBottom.append(this.topContentDiv);
+		this.frontFaceBackFace.append(this.bottomContentDiv);
+		console.log(WelcomeWall);
+		WelcomeWall.flickrEventsHandler.getRandomPhotoForElement(topImage);
 	}
 	else {
 		console.log("No Article Soure Found!");
@@ -469,18 +547,76 @@ WelcomeWall.FullArticle.prototype.insertContent = function(sourceNumber){
 			id:"canvas-"+this.canvasId
 		});
 		this.canvasId++;
-		var topContentDiv = $("<div />").addClass("full-article-content-container-pdf").append(canvasElement1);
-		var bottomContentDiv = $("<div />").addClass("full-article-content-container-pdf").append(canvasElement2);
-		this.frontFaceBottom.append(topContentDiv);
-		this.frontFaceBackFace.append(bottomContentDiv);
+		this.topContentDiv = $("<div />").addClass("full-article-content-container-pdf").append(canvasElement1);
+		this.bottomContentDiv = $("<div />").addClass("full-article-content-container-pdf").append(canvasElement2);
+		this.frontFaceBottom.append(this.topContentDiv);
+		this.frontFaceBackFace.append(this.bottomContentDiv);
 		loadPDFDocument(canvasElement1.attr("id"));
 		loadPDFDocument(canvasElement2.attr("id"));
 
 	}
-	
+}
 
-	
+WelcomeWall.FullArticle.prototype.activateScrollButtons = function(){
+	var that = this;
+	//console.log(this.scrollStart);
+	//console.log(this.scrollNumber);
+	//console.log(this.articleHeight);
 
+	this.scrollButtonTop.unbind();
+	this.scrollButtonBottom.unbind();
+	if(this.scrollNumber <= 0){
+		this.scrollButtonTop.fadeOut();
+		this.scrollButtonTop.unbind();
+	}
+	else{
+		console.log("Showing Top Scroll Button");
+		this.scrollButtonTop.fadeIn();
+		this.scrollButtonTop.click(function(){
+			that.scrollArticleUp();
+		});
+	}
+
+	if(this.scrollNumber >= this.scrollStop){
+		this.scrollButtonBottom.fadeOut();
+	}
+	else {
+		console.log("Showing Bottom Scroll Button");
+		this.scrollButtonBottom.fadeIn();
+		this.scrollButtonBottom.click(function(){
+			that.scrollArticleDown();
+		});
+	}
+}
+
+WelcomeWall.FullArticle.prototype.scrollArticleDown = function(){
+	//console.log(this.topContentDiv.height());
+	//console.log(this.topContentDiv.offset().top);
+	//console.log($(window).height());
+
+	//var space = $(window).height() - (this.topContentDiv.offset().top + this.topContentDiv.height());
+	//console.log(space);
+	var scrollAmount = 400;
+	this.topContentDiv.animate({top: "-="+scrollAmount});
+	this.bottomContentDiv.animate({top: "-="+scrollAmount});
+	this.scrollNumber +=scrollAmount;
+	this.activateScrollButtons();
+}
+
+WelcomeWall.FullArticle.prototype.scrollArticleUp = function(){
+	//console.log(this.topContentDiv.height());
+	//console.log(this.topContentDiv.offset().top);
+	//console.log($(window).height());
+
+
+
+	///var space = $(window).height() - (this.topContentDiv.offset().top + this.topContentDiv.height());
+	//console.log(space);
+	var scrollAmount = 400;
+	this.topContentDiv.animate({top: "+="+scrollAmount});
+	this.bottomContentDiv.animate({top: "+="+scrollAmount});
+	this.scrollNumber -=scrollAmount;
+	this.activateScrollButtons();
 }
 
 WelcomeWall.TileGroup.prototype.flipTile = function (tileNumber){

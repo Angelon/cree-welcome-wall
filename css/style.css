@@ -354,6 +354,7 @@ tile face.front h3 {
   margin: 3px 0px 0px 0px;
   height: 90px;
   overflow: hidden;
+  font-family: "Helvetica Roman";
 }
 
 tile face.front img {
@@ -383,17 +384,34 @@ tile face.back .tilefacecontent {
   padding: 10px;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
+  font-family: "Helvetica Roman";
+  font-size: 16px;
 }
 
 tile face.back .tilefacecontent h3 {
   color: #FFF;
   background: #000;
-  padding: 5px;
+  padding: 5px 5px 5px 15px;
+  font-family: "Helvetica Light Condensed";
+  font-size: 26px;
+  margin: 10px 0px 10px 0px;
 }
 
 tile face.back .tilefacecontent .expandedcontent {
   height: 280px;
   overflow: hidden;
+}
+
+tile face.back .tilefacecontent p {
+  margin: 5px 15px 10px 10px;
+}
+
+tile face.back .tilefacecontent ul {
+
+}
+
+tile face.back .tilefacecontent ul li {
+
 }
 
 tile face.back .tilefacecontent .expandedcontent iframe {
@@ -434,6 +452,7 @@ tilefacecontent {
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   padding: 15px 15px 0px 15px;
+  
 }
 
 tilefacecontent .articletab {
@@ -468,9 +487,20 @@ tilefacecontent .articletab {
 
   tilegroupcontainer tilecontainer tile p {
     margin:5px 15px 10px 0px;
-    font-size: 12px;
     width: 340px;
-    font-size: 12px;    
+      
+  }
+
+  tilegroupcontainer tilecontainer tile ul {
+    margin:5px 15px 10px 0px;
+    width: 340px;
+  }
+
+  tilegroupcontainer tilecontainer tile .expandedcontent .image-container {
+    background: #000;
+    height: 200px;
+    width: 200px;
+    float: right;
   }
 
   tile div.readmore {
@@ -552,7 +582,7 @@ articleface div {
     color: white;
     left:130px;
     display:none;
-    z-index: 500;
+    z-index: 1700;
     background: url("../img/more-button.png");
   }
 
@@ -565,7 +595,7 @@ articleface div {
     background:  url("../img/close-button.png");
     left:230px;
     display:none;
-    z-index: 501;
+    z-index: 1701;
   }
 
   .tile-nav-button {
@@ -600,7 +630,7 @@ articleface div {
 
 .glass-panel.welcome {
    left: 37px;
- top: 950px;
+  top: 950px;
 }
 
 .glass-panel.weather{
@@ -845,7 +875,7 @@ articleface div {
 }
 
 .faux-article-face-top .back {
-  background: #FFF;
+  background: #565656;
   -webkit-transform: rotateX(180deg);
   -moz-transform: rotateX(180deg);
   position: absolute;
@@ -858,7 +888,7 @@ articleface div {
 }
 
 .faux-article-face-bottom {
-  background: #FFF;
+  background: #565656;
   position: absolute;
   top:0px;
   left: 0px;
@@ -875,24 +905,68 @@ articleface div {
 
 .faux-article-face-bottom .full-article-content-container {
   position: absolute;
-  
-
 }
 
 .full-article-content-container {
   margin: 20px 70px 30px 40px;
-  padding: 10px 30px 15px 20px;
-  background: #cfd7d9;
+  padding: 10px 50px 15px 50px;
+  background: #e8e8e8;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
+  -webkit-box-shadow: 2px 2px 13px rgba(31, 31, 31, 1);
+  -moz-box-shadow:    2px 2px 13px rgba(31, 31, 31, 1);
+  box-shadow:         2px 2px 13px rgba(31, 31, 31, 1);
 }
 
 .full-article-content-container h3 {
   font-size: 40px;
+  font-family: "Helvetica Light Condensed";
 
 }
 
+.full-article-content-container p {
+  font-family: "Helvetica Roman";
+}
 
+
+.full-article-content-container ul {
+  font-family: "Helvetica Roman";
+}
+
+.full-article-content-container .top-image {
+  height: 300px;
+  background: #000;
+  overflow: hidden;
+  width: 762px;
+  text-align: center;
+  -webkit-box-shadow: 2px 2px 13px rgba(31, 31, 31, 1);
+  -moz-box-shadow:    2px 2px 13px rgba(31, 31, 31, 1);
+  box-shadow:         2px 2px 13px rgba(31, 31, 31, 1);
+}
+
+.faux-article-container .scroll-button {
+  opacity: 0.3;
+  display: none;
+  background: #000;
+  height: 60px;
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+}
+
+.faux-article-container .scroll-button:hover {
+  opacity: 0.6;
+}
+
+.faux-article-container .scroll-button-top  {
+  top: 0px;
+}
+
+
+.faux-article-container .scroll-button-bottom {
+  bottom: 0px;
+}
 
 
 

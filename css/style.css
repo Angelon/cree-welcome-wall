@@ -976,7 +976,7 @@ articleface div {
 }
 
 .faux-article-container .scroll-button {
-  opacity: 0.3;
+  opacity: 0.5;
   display: none;
   background: #000;
   height: 60px;
@@ -984,10 +984,16 @@ articleface div {
   width: 100%;
   text-align: center;
   cursor: pointer;
+  font-size: 25px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  padding-top: 10px;
+  color: #FFF;
+  font-family: "Helvetica Light Condensed";
 }
 
 .faux-article-container .scroll-button:hover {
-  opacity: 0.6;
+  opacity: 0.8;
 }
 
 .faux-article-container .scroll-button-top  {

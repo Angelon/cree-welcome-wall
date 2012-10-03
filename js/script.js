@@ -599,6 +599,9 @@ WelcomeWall.FullArticle.prototype.closeFullArticle = function (){
 		rotateX: '0deg',
 		perspective: '1000px'
 	}, 1000, function (){
+		if(that.pdf){
+			that.pdf = false;
+		}
 		that.frontFaceBottom.html("");
 		that.frontFaceBackFace.html("");
 		that.container.hide();
@@ -616,7 +619,7 @@ WelcomeWall.FullArticle.prototype.activatePDFButtons = function (){
 	});
 	this.articleCloseButton.fadeIn();
 	if(this.pageNum <= 1){
-		this.scrollButtonTop.fadeOut();
+		this.scrollButtonTop.html("Previous Page").fadeOut();
 		this.scrollButtonTop.unbind();
 	}
 	else{
@@ -632,7 +635,7 @@ WelcomeWall.FullArticle.prototype.activatePDFButtons = function (){
 	}
 	else {
 		console.log("Showing Bottom Scroll Button");
-		this.scrollButtonBottom.fadeIn();
+		this.scrollButtonBottom.html("Next Page").fadeIn();
 		this.scrollButtonBottom.click(function(){
 			that.getNextPDFPage();
 		});
@@ -658,7 +661,7 @@ WelcomeWall.FullArticle.prototype.activateScrollButtons = function(){
 	}
 	else{
 		console.log("Showing Top Scroll Button");
-		this.scrollButtonTop.fadeIn();
+		this.scrollButtonTop.html("Scroll Up").fadeIn();
 		this.scrollButtonTop.click(function(){
 			that.scrollArticleUp();
 		});
@@ -669,7 +672,7 @@ WelcomeWall.FullArticle.prototype.activateScrollButtons = function(){
 	}
 	else {
 		console.log("Showing Bottom Scroll Button");
-		this.scrollButtonBottom.fadeIn();
+		this.scrollButtonBottom.html("Scroll Down").fadeIn();
 		this.scrollButtonBottom.click(function(){
 			that.scrollArticleDown();
 		});

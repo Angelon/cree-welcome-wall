@@ -251,6 +251,7 @@ div[role="panel-2"] {
 .panel-header[panel="1"]{
   background: url("../img/panel-1-tab.png");
 }
+
 tilegroupcontainer {
   display: block;
   position: absolute;
@@ -939,8 +940,8 @@ articleface div {
 }
 
 .full-article-content-container {
-  margin: 20px 70px 30px 40px;
-  padding: 10px 50px 15px 50px;
+  margin: 100px 100px 70px 100px;
+  padding: 30px 50px 15px 50px;
   background: #e8e8e8;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -968,7 +969,7 @@ articleface div {
   height: 300px;
   background: #000;
   overflow: hidden;
-  width: 762px;
+  width: 662px;
   text-align: center;
   -webkit-box-shadow: 2px 2px 13px rgba(31, 31, 31, 1);
   -moz-box-shadow:    2px 2px 13px rgba(31, 31, 31, 1);

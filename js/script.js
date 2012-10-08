@@ -213,29 +213,137 @@ var WelcomeWall = {
 				$(".flickr-panel .flickr-image").append(this.nextImageButton);
 				this.captionPanel = $("<div />").addClass("flickr-caption-panel");
 				$(".flickr-panel .flickr-image").append(this.captionPanel);
-			}
-			else {
 				WelcomeWall.flickrEventsHandler.getUserPublicPhotos();
 			}
 			
 		}
 	},
+	WeatherWidget : function (){
+		this.iconRes = "64";
+		this.fileType = ".png";
+		this.icons = {
+			"Chance of Flurries":"img/icons/weather/Cloudy",
+			"Chance of Rain":"img/icons/weather/light-rain",
+			"Chance of Freezing Rain":"img/icons/weather/Cloudy",
+			"Chance of Sleet":"img/icons/weather/Cloudy",
+			"Chance of Snow":"img/icons/weather/Cloudy",
+			"Chance of Thunderstorms":"img/icons/weather/Thunderstorms",
+			"Chance of a Thunderstorm":"img/icons/weather/Thunderstorms",
+			"Clear":"img/icons/weather/Sunny",
+			"Cloudy":"img/icons/weather/Cloudy",
+			"Flurries":"img/icons/weather/light-snow",
+			"Fog":"img/icons/weather/Cloudy",
+			"Haze":"img/icons/weather/Cloudy",
+			"Mostly Cloudy":"img/icons/weather/Overcast",
+			"Mostly Sunny":"img/icons/weather/Cloudy",
+			"Partly Cloudy":"img/icons/weather/Sunny-Interval",
+			"Partly Sunny":"img/icons/weather/Sunny-Period",
+			"Freezing Rain":"img/icons/weather/Cloudy",
+			"Rain":"img/icons/weather/Cloudy",
+			"Sleet":"img/icons/weather/hail",
+			"Snow":"img/icons/weather/snow",
+			"Sunny":"img/icons/weather/Sunny",
+			"Thunderstorms":"img/icons/weather/thunder",
+			"Thunderstorm":"img/icons/weather/Thunderstorms",
+			"Unknown":"img/icons/weather/Cloudy",
+			"Overcast":"img/icons/weather/Overcast",
+			"Scattered Clouds":"img/icons/weather/Cloudy"
+		}
+		this.init = function (){
+			this.container = $("<div />").addClass("weather-container");
+			this.leftContainer = $("<div />").addClass('left-container');
+			this.rightContainer = $("<div />").addClass('right-container');
+			this.tempContainer = $("<li />").addClass("temperature").html("00<sup>F</sup>");
+			this.cityContainer = $("<div />").addClass("city").html("Your City");
+			var weatherTitle = $("<div />").addClass("weather-title").html("Local Weather");
+			this.localTime = $("<div />").addClass("local-time").html("Local Time:");
+			
+			this.conditionsContainer = $("<ul />").addClass("conditions").append(this.tempContainer);;
+			//this.foreCastContainer = $("<ul />").addClass("forecast-container").append(this.tempContainer);
+			this.leftContainer.append(this.cityContainer).append(weatherTitle).append(this.localTime);
+			this.rightContainer.append(this.conditionsContainer);
+
+			this.container.append(this.leftContainer).append(this.rightContainer);
+			$(".glass-panel.weather .panel-container .back").prepend(this.container);
+		}
+	},
 	
 	
 	init: function(welcome, panels){
+		this.flickrEventsHandler = new WelcomeWall.FlickrEventsHandler();
+			this.flickrEventsHandler.init(true);
+			
 		if(panels){
 			this.panel2 = new this.ArticlePanel(2);
-			$(this.panel2.container).insertAfter("header");
+			$(this.panel2.container).insertAfter("div[role='panel-1']");
 			this.panel2.init();
-			this.flickrEventsHandler = new WelcomeWall.FlickrEventsHandler();
-			this.flickrEventsHandler.init();
+			//this.flickrEventsHandler = new WelcomeWall.FlickrEventsHandler();
+			//this.flickrEventsHandler.init();
+
 		}
 		if(welcome){
-			this.flickrEventsHandler = new WelcomeWall.FlickrEventsHandler();
-			this.flickrEventsHandler.init(true);
+			this.weatherWidget = new WelcomeWall.WeatherWidget();
+			this.weatherWidget.init();
+			this.weatherWidget.getWeatherForZipCode();
+			$(".glass-panel").each(function (){
+		        bindGlassPanel($(this));
+		      });
 		}
+		
 	}
 
+}
+
+WelcomeWall.WeatherWidget.prototype.getWeatherForZipCode = function (location){
+	var location = location || "27703";
+	var apiKey = "6e7a9673dba9b752";
+	var apiURL = "http://api.wunderground.com/api/" + apiKey + "/forecast/geolookup/conditions/q/CA/" + location + ".json";
+	var that = this;
+	//$.getJSON(apiURL, function(data){
+	//	console.log("Weather API CallBack");
+	//	console.log(data);
+	//});
+	
+	  $.ajax({
+		  //url : "http://api.wunderground.com/api/" + apiKey + "/geolookup/conditions/q/IA/Cedar_Rapids.json",
+		  url: apiURL,
+		  dataType : "jsonp",
+		  success : function(parsed_json) {
+			  var location = parsed_json['location']['city'];
+			  var temp_f = parsed_json['current_observation']['temp_f'];
+			  console.log("Current temperature in " + location + " is: " + temp_f);
+			  console.log(parsed_json);
+			  that.weatherJSON = parsed_json;
+			  that.updateWeatherPanel.call(that);
+		  }
+	  });
+
+}
+
+WelcomeWall.WeatherWidget.prototype.updateWeatherPanel = function (){
+	console.log("updateWeatherPanel");
+	console.log(this.weatherJSON);
+	var localTime = new Date(this.weatherJSON.current_observation.local_time_rfc822);
+	this.cityContainer.html(this.weatherJSON.location.city);
+	this.tempContainer.html(Math.floor(parseInt(this.weatherJSON.current_observation.temp_f)) +"<sup>F</sup>");
+	this.localTime.html("Local Time: " + localTime.getHours() + ":" + localTime.getMinutes());
+	this.loadForecast();
+}
+
+WelcomeWall.WeatherWidget.prototype.loadForecast = function (){
+	var weather = this.weatherJSON.forecast.simpleforecast.forecastday;
+	this.conditionsContainer.html("");
+	this.conditionsContainer.append(this.tempContainer);
+	for(x in weather){
+		var day = $("<li />");
+		console.log(this.icons[weather[x].conditions]);
+		var img = $("<img />").attr({
+			src:this.icons[weather[x].conditions] + "-"+ this.iconRes + this.fileType
+		});
+		day.append(img).append(weather[x].conditions);
+		//day.html(weather[x].conditions);
+		this.conditionsContainer.append(day);
+	}
 }
 
 WelcomeWall.FlickrEventsHandler.prototype.attachEventHandler = function (event, handler){

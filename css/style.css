@@ -220,12 +220,16 @@ td { vertical-align: top; }
 
 header {
   height:72px;
-  background: url("../img/panel-1-top-image.png") no-repeat;
+  background: url("../img/panel-1-top-image.png") repeat-x;
 }
 
 footer {
   height: 73px;
-  background: url("../img/panel-bottom-border.png") no-repeat;
+  background: url("../img/panel-bottom-border.png") repeat-x;
+}
+
+#main {
+  height:935px;
 }
 
 div[role="panel-1"] {
@@ -233,16 +237,17 @@ div[role="panel-1"] {
   background: url("../img/main-bg-1.png");
   display: block;
   overflow: hidden;
-  
+  width: 50%;
+  float:left;
 }
 
 div[role="panel-2"] {
   height: 935px;
-  width: 100%;
+  width: 50%;
   background: #0cb5e6;
   background: url("../img/main-bg-1.png");
   display: block;
-
+  float:left;
 }
 
 .panel-header{
@@ -758,6 +763,99 @@ articleface div {
   width: 590px;
   height: 132px;
   background: url("../img/welcome-overlay-2.png");
+}
+
+.weather-container {
+   position: absolute;
+  top: 47px;
+  left: 27px;
+  background: #0b8bd5;
+  width: 590px;
+  height: 132px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  color: #000;
+  padding: 20px 0px 0px 10px;
+  background: url("../img/weather-panel-bg.png")
+}
+
+.weather-container .left-container {
+  display: inline-block;
+  width: 210px;
+  vertical-align: top;
+}
+
+.weather-container .right-container {
+  display: inline-block;
+  width: 360px;
+  height: 100px;
+  vertical-align: top;
+}
+
+.weather-container .weather-title {
+  font-size: 24px;
+  text-transform: uppercase;
+}
+
+.weather-container .city {
+  font-size: 24px;
+  font-weight: bold;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+.weather-container .local-time {
+  font-size: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+.weather-container .conditions .temperature {
+  font-size: 46px;
+  font-weight: bold;
+  text-transform: uppercase;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.weather-container .forecast-container {
+  
+
+}
+
+.weather-container .forecast-container li {
+  text-align: center;
+  display: inline-block;
+  width: 64px;
+}
+
+.weather-container .conditions .temperature sup {
+  font-size: 15px;
+}
+
+.weather-container .conditions {
+  list-style-type: none;
+  padding: 0px;
+  margin: 0px;
+  vertical-align: middle;
+}
+
+.weather-container .conditions li {
+   text-align: center;
+  display: inline-block;
+  width: 64px;
+  vertical-align: middle;
+  font-size: 12px;
+  margin-right: 7px;
+}
+
+.weather-container .conditions img {
+
+}
+
+.weather-container .conditions .text {
+
 }
 
 .flickr-panel {

@@ -237,13 +237,13 @@ div[role="panel-1"] {
   background: url("../img/main-bg-1.png");
   display: block;
   overflow: hidden;
-  width: 50%;
+  width: 100%;
   float:left;
 }
 
 div[role="panel-2"] {
   height: 935px;
-  width: 50%;
+  width: 100%;
   background: #0cb5e6;
   background: url("../img/main-bg-1.png");
   display: block;

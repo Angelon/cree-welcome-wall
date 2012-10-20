@@ -29,6 +29,11 @@
        Modernizr enables HTML5 elements & feature detects for optimal performance.
        Create your own custom Modernizr build: www.modernizr.com/download/ -->
   <script src="js/libs/modernizr-2.5.3.min.js"></script>
+    <style>
+  body {
+    overflow: scroll;
+  }
+  </style>
 </head>
 <body>
   <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you support IE 6.
@@ -54,6 +59,7 @@
   <!-- scripts concatenated and minified via build script -->
  <script src="js/plugins.js"></script>
   <script src="js/script.js"></script>
+  <script src="js/FlickrManager.js"></script>
   <script src="js/libs/jquery.transitions.js"></script>
   <script src="js/libs/underscore.js"></script>
   <script src="js/libs/backbone.js"></script>
@@ -68,7 +74,11 @@
     g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
     s.parentNode.insertBefore(g,s)}(document,'script'));
     $(document).ready(function (){
-      WelcomeWall.init(false, true, false);
+        WelcomeWall.init({
+        welcome:false,
+        panel1:true,
+        panel2:false
+      });
     });
   </script>
 </body>

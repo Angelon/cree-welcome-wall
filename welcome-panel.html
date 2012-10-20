@@ -22,6 +22,7 @@
 
   <link rel="stylesheet" href="fonts/style.css">
   <link rel="stylesheet" href="css/style.css">
+  <link href="http://vjs.zencdn.net/c/video-js.css" rel="stylesheet">
 
   <!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
 
@@ -29,6 +30,11 @@
        Modernizr enables HTML5 elements & feature detects for optimal performance.
        Create your own custom Modernizr build: www.modernizr.com/download/ -->
   <script src="js/libs/modernizr-2.5.3.min.js"></script>
+  <style>
+  body {
+    overflow: scroll;
+  }
+  </style>
 </head>
 <body>
   <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you support IE 6.
@@ -40,13 +46,15 @@
   <div id="main">
   <div role="panel-1">
     <div class="panel-header" panel="1">
-
+      <div class='panel-title'>LED In Action</div>
     </div>
     <div class="flickr-panel">
         <div class="flickr-image">
 
         </div>
     </div>
+
+
 
     <div class="glass-panel welcome">
       <div class="panel-container">
@@ -86,9 +94,39 @@
       </div>
 
     </div>
+
+    <div id="agenda-panel">
+      <div class="agenda-container">
+        <h3>Agenda <span class="agenda-date">OCT 19 - 2012</span></h3>
+        <ul>
+          <li><span>12:00</span> Breakfast</li>
+          <li><span>12:00</span> Introduction</li>
+          <li><span>12:00</span> LED lighting in Retail Environments</li>
+          <li><span>12:00</span> Energy cost control strategies across a retail network</li>
+          <li><span>12:00</span> Lunch</li>
+          <li><span>12:00</span> Case Study: Creative uses of LED lighting across the world</li>
+          <li><span>12:00</span> Breakout Sessions</li>
+          <li><span>12:00</span> Goodbyes and Goodie Bags</li>
+          <li><span>12:00</span> Get out.</li>
+        </ul>
+      </div>
+      <div class="large-panel-tab"></div>
+      <div class="agenda-close-button"></div>
+    </div>
+
   </div>
+
+  <video id="my_video_1" class="video-js vjs-default-skin" controls
+  preload="auto" width="1920" height="983" loop="true"
+  data-setup="{}">
+  <source src="movies/left_high.mp4" type='video/mp4'>
+</video>
+
 </div>
   <footer>
+
+    <div id="radio-button-container">
+    </div>
 
   </footer>
 
@@ -100,12 +138,16 @@
   <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')</script>
 
   <!-- scripts concatenated and minified via build script -->
+  <script src="http://vjs.zencdn.net/c/video.js"></script>
  <script src="js/plugins.js"></script>
   <script src="js/script.js"></script>
+  <script src="js/FlickrManager.js"></script>
   <script src="js/libs/jquery.transitions.js"></script>
   <script src="js/libs/underscore.js"></script>
   <script src="js/libs/backbone.js"></script>
   <script type="text/javascript" src="https://raw.github.com/mozilla/pdf.js/gh-pages/build/pdf.js"></script>
+  
+
   <!-- end scripts -->
 
   <!-- Asynchronous Google Analytics snippet. Change UA-XXXXX-X to be your site's ID.
@@ -115,7 +157,13 @@
     (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
     g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
     s.parentNode.insertBefore(g,s)}(document,'script'));
-    WelcomeWall.init(true, false, false);
+    $(document).ready(function (){
+        WelcomeWall.init({
+        welcome:true,
+        panel1:false,
+        panel2:false
+      });
+    });
   </script>
 </body>
 </html>

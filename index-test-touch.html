@@ -22,19 +22,13 @@
 
   <link rel="stylesheet" href="fonts/style.css">
   <link rel="stylesheet" href="css/style.css">
-  <link href="http://vjs.zencdn.net/c/video-js.css" rel="stylesheet">
-
+<link href="http://vjs.zencdn.net/c/video-js.css" rel="stylesheet">
   <!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
 
   <!-- All JavaScript at the bottom, except this Modernizr build.
        Modernizr enables HTML5 elements & feature detects for optimal performance.
        Create your own custom Modernizr build: www.modernizr.com/download/ -->
   <script src="js/libs/modernizr-2.5.3.min.js"></script>
-  <style>
-  body {
-    overflow: scroll;
-  }
-  </style>
 </head>
 <body>
   <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you support IE 6.
@@ -95,13 +89,6 @@
 
     </div>
 
-    <div id="weather-zip-code-panel">
-      <div class="numpad-close-button"></div>
-      <div class="zip-code-field-container">
-        <input type="text" id="zip-code-field" /> <div class="num-pad-go-button">GO</div>
-      </div>
-    </div>
-
     <div id="agenda-panel">
       <div class="agenda-container">
         <h3>Agenda <span class="agenda-date">OCT 19 - 2012</span></h3>
@@ -120,7 +107,6 @@
       <div class="large-panel-tab"></div>
       <div class="agenda-close-button"></div>
     </div>
-
   </div>
 
   <video id="my_video_1" class="video-js vjs-default-skin" controls
@@ -147,14 +133,11 @@
     <div id="radio-button-container">
     </div>
 
-    <div id="weather-search">Touch To Search Weather By Zipcode</div>
-    <div id="weather-search-icon"></div>
-
   </footer>
 
 
   <!-- JavaScript at the bottom for fast page loading -->
-
+<object id="tuio" type="application/x-tuio" style="width: 0px; height: 0px;">Plugin FAILED to load</object>
   <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
   <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')</script>
@@ -166,12 +149,9 @@
   <script src="js/script-touch.js"></script>
   <script src="js/FlickrManager.js"></script>
   <script src="js/libs/jquery.transitions.js"></script>
-  <script src="js/libs/animate-colors.js"></script>
   <script src="js/libs/underscore.js"></script>
   <script src="js/libs/backbone.js"></script>
   <script type="text/javascript" src="https://raw.github.com/mozilla/pdf.js/gh-pages/build/pdf.js"></script>
-  
-
   <!-- end scripts -->
 
   <!-- Asynchronous Google Analytics snippet. Change UA-XXXXX-X to be your site's ID.
@@ -181,12 +161,11 @@
     (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
     g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
     s.parentNode.insertBefore(g,s)}(document,'script'));
-    $(document).ready(function (){
-        WelcomeWall.init({
-        welcome:true,
-        panel1:false,
-        panel2:false
-      });
+    
+    WelcomeWall.init({
+      welcome:true,
+      panel1:true,
+      panel2:true
     });
   </script>
 </body>

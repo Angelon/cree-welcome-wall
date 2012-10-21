@@ -26,7 +26,7 @@ WelcomeWall.FlickrEventsHandler.prototype.activateNavButtons = function (){
 			this.previousImageButton.click(function (){
 				that.currentNavAction = that.getPreviousPhoto;
 				that.getPreviousPhoto();
-
+				that.stopTimer();
 			});
 		}
 		this.previousImageButton.fadeIn();
@@ -40,14 +40,33 @@ WelcomeWall.FlickrEventsHandler.prototype.activateNavButtons = function (){
 		this.nextImageButton.click(function (){
 			that.currentNavAction = that.getNextPhoto;
 			that.getNextPhoto();
-			
+			that.stopTimer();
 		});
+
+		this.startTimer();
 		//that.attachEventHandler("NO_SIZE_FOUND", that.getNextPhoto);
 		
 	}
 	
-	
-	
+
+}
+
+WelcomeWall.FlickrEventsHandler.prototype.startTimer = function () {
+	this.stopTimer();
+	var that = this;
+	console.log("Starting Flickr Image Timer");
+	if(WelcomeWall.initObject.welcome){
+		this.imageTimer = setInterval(function(){
+			console.log("Firing Flickr Image Timer");
+			that.currentNavAction = that.getNextPhoto;
+			that.getNextPhoto();
+		},7000);
+	}
+}
+
+WelcomeWall.FlickrEventsHandler.prototype.stopTimer = function () {
+	console.log("Stopping Flickr Image Timer");
+	clearInterval(this.imageTimer);
 }
 
 WelcomeWall.FlickrEventsHandler.prototype.deactivateNavButtons = function (){
@@ -171,8 +190,8 @@ WelcomeWall.FlickrEventsHandler.prototype.getPhotoSizesHandler = function (data)
 	}*/
 	//console.log(data.sizes.size[data.sizes.size.length-1]);
 	if(bestSize){
-		console.log("Size Found");
-		console.log(bestSize.source);
+		//console.log("Size Found");
+		//console.log(bestSize.source);
 		var newImage = $("<img />").attr({
 			src : bestSize.source
 		}).one('load', function() { //Set something to run when it finishes loading
@@ -246,8 +265,8 @@ WelcomeWall.FlickrEventsHandler.prototype.pullFromImageCache = function () {
 		//console.log("Proposed Current Cache Image: " + currentCacheImage);
 		//console.log("Current Image Cache Length:" + this.imageCache.length);
 		if(currentCacheImage >= this.imageCache.cache.length-1){
-			
-			return;
+			this.currentCacheImage=0;
+			return this.imageCache.cache[this.currentCacheImage];
 		}
 		else {
 			this.currentCacheImage++;
@@ -272,13 +291,14 @@ WelcomeWall.FlickrEventsHandler.prototype.pullFromImageCache = function () {
 }
 
 WelcomeWall.FlickrEventsHandler.prototype.getPhotoInfoHandler = function (data) {
-	console.log("getPhotoInfoHandler");
-	console.log(data);
+	//console.log("getPhotoInfoHandler");
+	//console.log(data);
 	this.removeEventHandler("Flickr_API_CALL_COMPLETE");
 	this.captionPanel.html("By: " + ((data.photo.owner.realname==="")? data.photo.owner.username : data.photo.owner.realname));
 	this.activateCaptionPanel();
 	this.broker.trigger("FLICKR_PANEL_UPDATE_COMPLETE");
 	if(this.imageCache.cache.length == 1 || this.imageCache.firstPreloadComplete == false){
+		console.log("GETTING MORE MONTAGE IMAGESSSSS");
 		this.imageCache.init({
 					min: 700,
 					max: 800,
@@ -500,12 +520,13 @@ WelcomeWall.FlickrEventsHandler.prototype.getNextPhoto = function(){
 }
 
 WelcomeWall.FlickrEventsHandler.prototype.getPhotoForMontage = function (myObj) {
+	//console.log("Getting Photo For Montage");
 	var myObj = myObj || this.tempMyObj;
 	this.tempMyObj = myObj;
 	var that = this;
-	console.log(this);
-	console.log("This is my Object!");
-	console.log(myObj);
+	//console.log(this);
+	//console.log("This is my Object!");
+	//console.log(myObj);
 	WelcomeWall.montageManager.currentImage++;
 	var currentImage = WelcomeWall.montageManager.currentImage;
 	var imagesLoaded = myObj.imagesLoaded;
@@ -531,30 +552,30 @@ WelcomeWall.FlickrEventsHandler.prototype.getPhotoForMontage = function (myObj) 
 
 		this.getPhotoSizesForMontage(this.imagesList[currentImage].id, (function (scope, myObj){
 			return function(data){
-						console.log(scope);
-						console.log("And This is my Object!");
-						console.log(myObj);
-						console.log("Number of Images Loaded");
-						console.log(myObj.imagesLoaded);
+						//console.log(scope);
+						//console.log("And This is my Object!");
+						//console.log(myObj);
+						//console.log("Number of Images Loaded");
+						//console.log(myObj.imagesLoaded);
 						that = scope;
 						that.removeEventHandler("Flickr_API_CALL_COMPLETE");
 						//that.attachEventHandler("NO_SIZE_FOUND", that.getPhotoForMontage, [myObj]);
-						console.log("My Object");
-						console.log(myObj);
-						console.log(data);
+						//console.log("My Object");
+						//console.log(myObj);
+						//console.log(data);
 						var bestSize = that.getBestPhotoSizeForMontage({
 																		sizes:data.sizes.size, 
 																		ratio:myObj[imagesLoaded].ratio,
 																		min:myObj[imagesLoaded].min,
 																		max:myObj[imagesLoaded].max
 																	});
-						console.log("Best Size");
-						console.log(bestSize);
+						//console.log("Best Size");
+						//console.log(bestSize);
 						var that = this;
 
 						if(bestSize){
-							console.log("Size Found for image " + myObj.imagesLoaded);
-							console.log(bestSize.source);
+							//console.log("Size Found for image " + myObj.imagesLoaded);
+							//console.log(bestSize.source);
 							myObj[imagesLoaded].image = bestSize;
 							myObj.imagesLoaded++;
 							if(myObj.imagesLoaded == myObj.numberOfImages){
@@ -842,26 +863,29 @@ WelcomeWall.FlickrEventsHandler.prototype.CheckSizeForVerticalImageCache = funct
 WelcomeWall.ImageCache.prototype.getMontageImage = function(myObj){
 	
 	//return WelcomeWall.flickrEventsHandler.imageCache.cache[0];
-	console.log("Getting Montage Image");
+	//console.log("Getting Montage Image");
 	//console.log(myObj);
 	//console.log(this[myObj.cache]);
 	//console.log(this[myObj.currentImage]);
 	//this[myObj.currentImage]++;
 	//return this[myObj.cache][this[myObj.currentImage]];
-	if(this.checkImageCount){
+	//if(this.checkImageCount){
 		//console.log(myObj);
 		this[myObj.currentImage]++;
+		if(this[myObj.currentImage] >= this[myObj.cache].length-1){
+			this[myObj.currentImage] = 0;
+		}
 		return this[myObj.cache][this[myObj.currentImage]];
-	}
-	else {
-		WelcomeWall.flickrEventsHandler.attachEventHandler("PRELOAD_COMPLETE", (function (myObj, scope){
-																return function(){
-																	scope.getMontageImage(myObj);
-																}
-																	})(myObj, this));
-		this.preLoadImages();
+	//}
+	//else {
+		//WelcomeWall.flickrEventsHandler.attachEventHandler("PRELOAD_COMPLETE", (function (myObj, scope){
+		//														return function(){
+		//															scope.getMontageImage(myObj);
+		//														}
+		//															})(myObj, this));
+		//this.preLoadImages();
 
-	}
+	//}
 	
 }
 

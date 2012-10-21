@@ -43,6 +43,124 @@ function jsonFlickrApi(data){
 
 }
 
+var numPad = {
+	init: function (){
+		this.container = $("<div />").addClass("num-pad-container");
+		this.numberPad = $("<div />").addClass("num-pad");
+		this.container.append(this.numberPad);
+		this.buildButtons();
+		var that = this;
+		$("#weather-search").bind("click", function (){
+			that.showNumPad();
+		});
+	},
+
+	showNumPad : function (){
+		console.log("Showing Numpad");
+		var that  = this;
+		$("#weather-search").unbind();
+		$(".numpad-close-button").unbind();
+		$("#weather-zip-code-panel").transition({
+				rotateX: '0deg',
+				perspective: '1400px'
+			}, 1000, function (){
+				$("#weather-search").unbind();
+				$("#weather-search").bind("click", function (){
+					that.hideNumPad();
+				});
+
+				$(".numpad-close-button").bind("click", function (){
+					that.hideNumPad();
+				});
+				that.startTimer();
+			});
+	},
+
+	hideNumPad : function (){
+		console.log("Hiding Numpad");
+		var that  = this;
+		$(".numpad-close-button").unbind();
+		$("#weather-search").unbind();
+		$("#weather-zip-code-panel").transition({
+				rotateX: '180deg',
+				perspective: '1400px'
+			}, 1000, function (){
+				$("#weather-search").unbind();
+				$("#weather-search").bind("click", function (){
+					that.showNumPad();
+				});
+				that.stopTimer();
+			});
+	},
+
+	buildButtons : function (){
+		var numpadNumbers = [7,8,9,4,5,6,1,2,3,0,"clear"];
+		var that = this;
+		for(var x in numpadNumbers){
+			var button = $("<div />").addClass("num-pad-button");
+			button.attr({
+				"number":numpadNumbers[x]
+			});
+			var numSpan = $("<span />").html(numpadNumbers[x]);
+			button.html(numSpan);
+			this.numberPad.append(button);
+			button.bind("click", function (){
+				//$(this).children("span").css({
+				//	"background-color":"#FFF"
+				//});
+				//$(this).children("span").animate({
+				//	backgroundColor:"#000"
+				//}, 1000);
+				that.updateField($(this).attr("number"));
+			});
+
+
+		}
+
+		$(".num-pad-go-button").bind("click", function (){
+				
+				var fieldValue = $("#zip-code-field").val();
+				fieldValue = parseInt(fieldValue);
+				console.log("Getting Weather for Zipcode: " + fieldValue);
+				WelcomeWall.weatherWidget.getWeatherForZipCode(fieldValue);
+				$("#zip-code-field").val("");
+				that.hideNumPad();
+				//$("#zip-code-field").val("");
+			});
+	},
+
+	updateField : function (newValue){
+		this.startTimer();
+		var fieldValue = $("#zip-code-field").val();
+		if(newValue == "clear"){
+			$("#zip-code-field").val("");
+		}
+		else if(fieldValue.length < 5){
+			fieldValue+=newValue;
+			$("#zip-code-field").val(fieldValue);
+		}
+	},
+
+	startTimer : function (){
+		var that = this;
+		this.stopTimer();
+		console.log("Starting NumPad Timer");
+		if(WelcomeWall.initObject.welcome){
+			this.imageTimer = setInterval(function(){
+				console.log("Firing NumPad Timer");
+				that.hideNumPad();
+			},10000);
+		}
+	},
+
+	stopTimer : function (){
+		console.log("Stopping NumPad Timer");
+		clearInterval(this.imageTimer);
+	}
+
+
+}
+
 var WelcomeWall = {
 	Tile : function(tileNumber, empty){
 		this.tileNumber = tileNumber;
@@ -60,7 +178,7 @@ var WelcomeWall = {
 			//console.log(WelcomeWall.feedManager);
 			var tileInfo = WelcomeWall.feedManager.feeds[feedNumber][sourceNumber];
 			//console.log("Tile Init");
-			this.container.click(bindContext(this.clickHandler, this));
+			this.container.bind("click", bindContext(this.clickerHandler, this));
 			if(tileInfo){
 				var tileBG = $("<div />").addClass("tile-bg").attr({"feed":feedNumber});
 				this.frontFace.append(tileBG);
@@ -79,10 +197,10 @@ var WelcomeWall = {
 				expandedContent.appendTo(tilefacecontent);
 				var image = $("<div />").addClass("image-container");
 				tilefacecontent.children(".expandedcontent").children("img").each(function (){
-					console.log("IMAGE SPECS");
-					console.log($(this));
-					console.log($(this).width());
-					console.log($(this).height());
+					//console.log("IMAGE SPECS");
+					//console.log($(this));
+					//console.log($(this).width());
+					//console.log($(this).height());
 
 					var maxWidth = 300; // Max width for the image
 			        var maxHeight = 200;    // Max height for the image
@@ -230,6 +348,8 @@ var WelcomeWall = {
 		this.scrollButtonTop = $("<div />").addClass("scroll-button").addClass("scroll-button-top");
 		this.scrollButtonBottom = $("<div />").addClass("scroll-button").addClass("scroll-button-bottom");
 		this.articleCloseButton = $("<div />").addClass("scroll-button").addClass("close-button")/*.html("Close")*/;
+		this.articleContentOverlay = $("<div />").addClass("faux-article-content-overlay");
+		this.container.append(this.articleContentOverlay);
 		this.container.append(this.scrollButtonTop);
 		this.container.append(this.scrollButtonBottom);
 		this.container.append(this.articleCloseButton);
@@ -243,6 +363,8 @@ var WelcomeWall = {
 			this.feedNumber = feedNumber;
 			this.tileGroup1.init(2, feedNumber);
 			this.tileGroup2.init(4, feedNumber);
+			this.tileGroup1.UnbindTiles();
+			this.tileGroup2.UnbindTiles();
 			this.tileGroup2.container.addClass("faux-tilegroup-container");
 			this.container.prepend(this.tileGroup2.container);
 			this.frontFaceTop.append(this.frontFaceBackFace);
@@ -341,10 +463,12 @@ var WelcomeWall = {
 		this.currentImage = 1;
 		this.panels = [];
 		this.currentLayout = 0;
+		this.isActive = false;
 
 		this.getPanelLayout = function () {
 			var layoutObject = {};
-			if(this.currentLayout = 0){
+			if(this.currentLayout == 0){
+				
 				layoutObject[0] = "quad";
 				layoutObject[1] = "tri";
 				layoutObject[2] = "quad";
@@ -390,26 +514,37 @@ var WelcomeWall = {
 		};
 
 		this.startTimer = function (){
+			this.stopTimer();
+			console.log("Starting Montage Timer");
 			var that = this;
-			this.timer = setInterval(function(){
-				that.updatePanels();
-			},30000);
+			if(this.isActive){1
+				this.timer = setInterval(function(){
+					console.log("Firing Montage Timer");
+					that.updatePanels();
+				},30000);
+			}
+			
 		},
 
 		this.stopTimer = function (){
+			console.log("Stopping Montage Timer");
 			clearInterval(this.timer);
 		}
 
 		this.activateButton = function (){
+			this.isActive = false;
 			var that = this;
 			this.radioButton.unbind();
 			this.radioButton.removeClass("disabled");
 			this.radioButton.addClass("enabled");
-			this.radioButton.click(function(){
+			this.radioButton.bind("click", function(){
+				that.isActive = true;
 				that.showPanels();
 				WelcomeWall.activateRadioButton();
 				WelcomeWall.activateMovieButton();
 				that.deactivateButton();
+				WelcomeWall.flickrEventsHandler.stopTimer();
+				
 
 			});
 		}
@@ -418,7 +553,7 @@ var WelcomeWall = {
 			this.radioButton.unbind();
 			this.radioButton.removeClass("enabled");
 			this.radioButton.addClass("disabled");
-			this.radioButton.click(function(){
+			this.radioButton.bind("click", function(){
 				//that.hidePanels();
 			});
 		}
@@ -480,18 +615,21 @@ var WelcomeWall = {
 		};
 
 		this.updatePanels = function (){
+			WelcomeWall.flickrEventsHandler.broker.off("PRELOAD_COMPLETE");
 			this.stopTimer();
-			if(WelcomeWall.flickrEventsHandler.imageCache.checkImageCount() == false){
-				var that = this;
-				WelcomeWall.flickrEventsHandler.broker.on("PRELOAD_COMPLETE", function(){
-					that.updatePanels();
-				});
-				return;
-			}
+			//if(WelcomeWall.flickrEventsHandler.imageCache.checkImageCount() == false){
+				//var that = this;
+				//WelcomeWall.flickrEventsHandler.broker.on("PRELOAD_COMPLETE", function(){
+					//that.updatePanels();
+				//});
+				//return;
+			//}
 
 			var myLayout = this.getPanelLayout();
 			for(var x in this.panels){
 				if(myLayout[x]){
+					console.log("Getting new Panel Layout");
+					console.log(myLayout[x]);
 					console.log(this.panels[x]);
 					this.panels[x].updatePanel({layout:myLayout[x]});
 				}	
@@ -586,7 +724,7 @@ var WelcomeWall = {
 		this.numberOfHorizontal2Images = 6;
 		this.numberOfVerticalImages = 3;
 		this.preloading = false;
-		this.firstPreloadComplete = false;
+		this.firstPreloadComplete = true;
 
 		this.init = function (obj){
 			var paramObject = {
@@ -615,16 +753,25 @@ var WelcomeWall = {
 		this.preloadImages = function(){
 			if(this.preloading == false){
 				this.preloading = true;
-				WelcomeWall.flickrEventsHandler.getPhotosForCache(this.params);
+				//WelcomeWall.flickrEventsHandler.getPhotosForCache(this.params);
 			}
 			
 		};
 
 		this.getMoreImages = function(){
+			if(this.params == undefined){
+				this.params = {
+					min: 700,
+					max: 800,
+					ratio: 1.7,
+					numberOfImages: 30,
+					currentImage:this.currentImage
+				};
+			}
 			if(this.preloading == false){
 				this.params.imagesLoaded = 0;
 				this.preloading = true;
-				WelcomeWall.flickrEventsHandler.getPhotosForCache(this.params);
+				//WelcomeWall.flickrEventsHandler.getPhotosForCache(this.params);
 			}
 		};
 
@@ -655,9 +802,9 @@ var WelcomeWall = {
 				return false;
 			}
 
-			console.log("PRELOAD_COMPLETE KEKE");
+			//console.log("PRELOAD_COMPLETE KEKE");
 			this.firstPreloadComplete = true;
-			console.log(this);
+			//console.log(this);
 			WelcomeWall.flickrEventsHandler.broker.trigger("PRELOAD_COMPLETE");
 			return true;
 
@@ -698,6 +845,9 @@ var WelcomeWall = {
 		$("#radio-button-container").append(this.movieRadioButton);
 		this.activateMovieButton();
 		
+		numPad.init();
+		$("#weather-zip-code-panel").append(numPad.container);
+
 		
 	},
 
@@ -705,11 +855,12 @@ var WelcomeWall = {
 		var that = this;
 		this.mainRadioButton.removeClass("disabled");
 		this.mainRadioButton.addClass("enabled");
-		this.mainRadioButton.click(function (){
+		this.mainRadioButton.bind("click", function (){
 			that.montageManager.hidePanels();
 			that.montageManager.activateButton();
 			that.activateMovieButton();
 			that.deactivateRadioButton();
+			WelcomeWall.flickrEventsHandler.startTimer();
 		});
 	},
 
@@ -725,7 +876,7 @@ var WelcomeWall = {
 		var that = this;
 		this.movieRadioButton.removeClass("disabled");
 		this.movieRadioButton.addClass("enabled");
-		this.movieRadioButton.click(function (){
+		this.movieRadioButton.bind("click", function (){
 			that.montageManager.hidePanels();
 			that.montageManager.activateButton();
 			that.activateRadioButton();
@@ -742,15 +893,47 @@ var WelcomeWall = {
 	},
 
 	showMovie : function(){
-		var myPlayer = _V_("my_video_1");
-		$("#my_video_1").show();
-		myPlayer.play();
+		if(this.initObject.welcome){
+			var myPlayer = _V_("my_video_1");
+			$("#my_video_1").show();
+			myPlayer.play();
+		}
+		
+
+		if(this.initObject.panel1){
+			var myPlayer2 = _V_("my_video_2");
+			$("#my_video_2").show();
+			myPlayer2.play();
+		}
+		
+		if(this.initObject.panel2){
+			var myPlayer3 = _V_("my_video_3");
+			$("#my_video_3").show();
+			myPlayer3.play();
+		}
 	},
 
 	hideMovie : function(){
-		var myPlayer = _V_("my_video_1");
-		myPlayer.pause();
-		$("#my_video_1").hide();
+		if(this.initObject.welcome){
+			var myPlayer = _V_("my_video_1");
+			myPlayer.pause();
+			$("#my_video_1").hide();
+		}
+		
+
+		if(this.initObject.panel1){
+			var myPlayer2 = _V_("my_video_2");
+			myPlayer.pause();
+			$("#my_video_2").hide();
+		}
+		
+
+		if(this.initObject.panel2){
+			var myPlayer3 = _V_("my_video_3");
+			myPlayer.pause();
+			$("#my_video_3").hide();
+		}
+		
 		
 	},
 
@@ -809,7 +992,7 @@ var WelcomeWall = {
 		var that = this;
 		$(".agenda-close-button").unbind();
 		$(".agenda-button").fadeIn();
-		$(".agenda-button").click(function(){
+		$(".agenda-button").bind("click", function(){
 			var scope = that;
 			$(".agenda-button").fadeOut();
 			$("#agenda-panel").transition({
@@ -827,7 +1010,7 @@ var WelcomeWall = {
 		var that = this;
 		$(".agenda-button").fadeOut();
 		$(".agenda-button").unbind();
-		$(".agenda-close-button").fadeIn().click(function(){
+		$(".agenda-close-button").fadeIn().bind("click", function(){
 			var scope = that;
 			$("#agenda-panel").transition({
 					perspective: '1000px',
@@ -1113,7 +1296,7 @@ WelcomeWall.MontageQuadLayout.prototype.getImageList = function (argObject) {
 }
 
 WelcomeWall.MontageTriLayout.prototype.getImageList = function (argObject) {
-	console.log("MontageQuadLayout.getImageList");
+	//console.log("MontageQuadLayout.getImageList");
 	var imageList = {};
 		/*imageList.numberOfImages = 3;
 		imageList[0] = {image:undefined, ratio:argObject.veritcalRatio, min:850, max:950};
@@ -1139,8 +1322,8 @@ WelcomeWall.FlickrMontagePanel.prototype.fetchImageHandler = function () {
 WelcomeWall.FlickrMontagePanel.prototype.updatePanel = function (argObject){
 	//var imageList = this.fetchImages(argObject);
 	if(this.currentLayout == undefined){
-		console.log("Getting new Layout");
-		console.log(argObject.layout);
+		//console.log("Getting new Layout");
+		//console.log(argObject.layout);
 		this.currentLayout = this.getNewLayout(argObject.layout);
 	}
 	else {
@@ -1159,13 +1342,13 @@ WelcomeWall.FlickrMontagePanel.prototype.updatePanel = function (argObject){
 }
 
 WelcomeWall.FlickrMontagePanel.prototype.updatePanelHandler = function (imageList){
-	console.log("FlickrMontagePanel.UpdatePanelHandler");
-	console.log(imageList);
+	//console.log("FlickrMontagePanel.UpdatePanelHandler");
+	//console.log(imageList);
 
 	for(var x =0; x<imageList.numberOfImages;x++){
-		console.log("loading image");
-		console.log(imageList);
-		console.log(imageList[x].source);
+		//console.log("loading image");
+		//console.log(imageList);
+		//console.log(imageList[x].source);
 		var imageContainer = $("<div />").addClass("montage-image-container").addClass("image-"+x);
 		if(imageList[x]) {
 			var newImage = $("<img />").attr({
@@ -1182,14 +1365,17 @@ WelcomeWall.FlickrMontagePanel.prototype.updatePanelHandler = function (imageLis
 			imageContainer.append(newImage);
 		}
 		
-		console.log(this.currentLayout["panel"+(x+1)]);
+		//console.log(this.currentLayout["panel"+(x+1)]);
 		this.currentLayout["panel"+(x+1)].append(imageContainer);
 
 	}
 	for(var x=1;x<=this.currentLayout.numberOfImages;x++){
 		this.currentLayout["panel"+x].fadeIn();
 	}
-	WelcomeWall.montageManager.startTimer();
+	if(WelcomeWall.montageManager.isActive){
+		WelcomeWall.montageManager.startTimer();
+	}
+	
 	//$("#main").append(this.container);
 }
 
@@ -1219,6 +1405,52 @@ WelcomeWall.WeatherWidget.prototype.getWeatherForZipCode = function (location){
 
 }
 
+WelcomeWall.WeatherWidget.prototype.openPanel = function (){
+	var that = this;
+	var openButton = $(".glass-panel.weather").children(".panel-container").children(".panel.front").children(".open-button");
+	var closeButton = $(".glass-panel.weather").children(".panel-container").children(".panel.back").children(".hide-button");
+	$(".glass-panel.weather").transition({
+		rotateX: '180deg',
+		perspective: '500px'
+	}, function (){
+		that.startTimer();
+		closeButton.bind("click", function(){
+			that.closePanel();
+			$(this).unbind();
+		});
+	});
+}
+
+WelcomeWall.WeatherWidget.prototype.closePanel = function (){
+	var that = this;
+	var openButton = $(".glass-panel.weather").children(".panel-container").children(".panel.front").children(".open-button");
+	var closeButton = $(".glass-panel.weather").children(".panel-container").children(".panel.back").children(".hide-button");
+	$(".glass-panel.weather").transition({
+		rotateX: '0deg',
+		perspective: '500px'}, function (){
+			that.stopTimer();
+			openButton.bind("click", function(){
+				that.openPanel();
+				$(this).unbind();
+			});
+	});
+		
+}
+
+WelcomeWall.WeatherWidget.prototype.startTimer = function (){ 
+	var that = this;
+	this.stopTimer();
+	this.activityTimer = setInterval(function(){
+			console.log("Firing Weather Widget Timer");
+			that.closePanel();
+		},20000);
+}
+
+WelcomeWall.WeatherWidget.prototype.stopTimer = function (){ 
+	console.log("Stopping Weather Widget Timer");
+	clearInterval(this.activityTimer);
+}
+
 WelcomeWall.WeatherWidget.prototype.updateWeatherPanel = function (){
 	console.log("updateWeatherPanel");
 	console.log(this.weatherJSON);
@@ -1228,6 +1460,7 @@ WelcomeWall.WeatherWidget.prototype.updateWeatherPanel = function (){
 	this.localTime.html("Local Time: " + localTime.getHours() + ":" + localTime.getMinutes());
 	this.loadForecast();
 	this.frontContainer.html(this.weatherJSON.location.city + " Weather");
+	this.openPanel();
 }
 
 WelcomeWall.WeatherWidget.prototype.loadForecast = function (){
@@ -1268,6 +1501,16 @@ WelcomeWall.FullArticle.prototype.showFullArticle = function(sourceNumber){
 		}
 		else {
 			that.setScrollNumbers();
+			if(that.articleContentOverlay){
+				that.articleContentOverlay.show();
+			}
+			if(that.topContentDiv){
+				that.topContentDiv.hide();
+			}
+			if(that.bottomContentDiv){
+				that.bottomContentDiv.hide();
+			}
+			
 		}
 	});
 }
@@ -1325,22 +1568,26 @@ WelcomeWall.FullArticle.prototype.insertContent = function(sourceNumber){
 		var headLine = $("<h3 />").html(source.title);
 		var content = $("<div />").html(source.news_body);
 		var headLine2 = $("<h3 />").html(source.title);
+		var headLine3 = $("<h3 />").html(source.title);
 		var content2 = $("<div />").html(source.news_body);
+		var content3 = $("<div />").html(source.news_body);
 
 		this.topContentDiv = $("<div />").addClass("full-article-content-container")/*.append(topImage)*/.append(headLine).append(content);
 		this.bottomContentDiv = $("<div />").addClass("full-article-content-container")/*.append(topImage2)*/.append(headLine2).append(content2);
 		this.bottomContentDivContainer = $("<div />").addClass("bottom-content-div-container").append(this.bottomContentDiv);
 		this.topContentDivContainer = $("<div />").addClass("top-content-div-container").append(this.topContentDiv);
+		this.articleOverlayContentContainer = $("<div />").addClass("article-overlay-content-container").append(headLine3).append(content3);
+		this.articleContentOverlay.append(this.articleOverlayContentContainer);
 		var topTab = $("<div />").addClass("large-panel-tab").addClass("article-tab");
-		this.topContentDivContainer.append(topTab);
+		this.container.append(topTab);
 
 		this.frontFaceBottom.append(this.topContentDivContainer);
 		this.frontFaceBackFace.append(this.bottomContentDivContainer);
 		content.children("img").each(function (){
-			console.log("IMAGE SPECS");
-			console.log($(this));
-			console.log($(this).width());
-			console.log($(this).height());
+			//console.log("IMAGE SPECS");
+			//console.log($(this));
+			//console.log($(this).width());
+			//console.log($(this).height());
 			var myImage = $(this);
 			that.reduceContentImage({
 				maxWidth:500,
@@ -1352,10 +1599,10 @@ WelcomeWall.FullArticle.prototype.insertContent = function(sourceNumber){
 		});
 
 		content2.children("img").each(function (){
-			console.log("IMAGE SPECS");
-					console.log($(this));
-					console.log($(this).width());
-					console.log($(this).height());
+			//console.log("IMAGE SPECS");
+				//	console.log($(this));
+					//console.log($(this).width());
+					//console.log($(this).height());
 					var myImage = $(this);
 
 					that.reduceContentImage({
@@ -1363,6 +1610,70 @@ WelcomeWall.FullArticle.prototype.insertContent = function(sourceNumber){
 						maxHeight:400,
 						img:myImage
 					});
+		});
+
+		content3.children("img").each(function (){
+			//console.log("IMAGE SPECS");
+					//console.log($(this));
+					//console.log($(this).width());
+					//console.log($(this).height());
+					var myImage = $(this);
+
+					that.reduceContentImage({
+						maxWidth:500,
+						maxHeight:400,
+						img:myImage
+					});
+		});
+
+		content.children("iframe").each(function (){
+			//console.log("IFRAME SPECS");
+					//console.log($(this));
+					//console.log($(this).width());
+					//console.log($(this).height());
+					var myIframe = $(this);
+
+					that.reduceContentImage({
+						maxWidth:500,
+						maxHeight:400,
+						img:myIframe
+					});
+		});
+
+		content2.children("iframe").each(function (){
+			//console.log("IFRAME SPECS");
+					//console.log($(this));
+					//console.log($(this).width());
+					//console.log($(this).height());
+					var myIframe = $(this);
+
+					that.reduceContentImage({
+						maxWidth:500,
+						maxHeight:400,
+						img:myIframe
+					});
+		});
+
+		content3.children("iframe").each(function (){
+			//console.log("IFRAME SPECS");
+					//console.log($(this));
+					//console.log($(this).width());
+					//console.log($(this).height());
+					var myIframe = $(this);
+
+					that.reduceContentImage({
+						maxWidth:500,
+						maxHeight:400,
+						img:myIframe
+					});
+		});
+
+
+
+		content.children("div").children().each(function (){
+			//console.log("IFRAME SPECS");
+			//		console.log($(this));
+					
 		});
 		//WelcomeWall.flickrEventsHandler.getRandomPhotoForElement([topImage, topImage2]);
 		//WelcomeWall.flickrEventsHandler.getRandomPhotoForElement(topImage2);
@@ -1431,6 +1742,17 @@ WelcomeWall.FullArticle.prototype.closeFullArticle = function (){
 	var that = this;
 	this.frontFaceTop.show();
 	this.deactivateScrollButtons();
+	if(this.topContentDiv){
+		this.topContentDiv.show();
+	}
+	if(this.bottomContentDiv){
+		this.bottomContentDiv.show();
+	}
+	if(this.articleContentOverlay){
+		this.articleContentOverlay.hide();
+		this.articleContentOverlay.html("");
+	}
+	
 	if(this.pdf){
 		this.topContentDiv.hide();
 		this.frontFaceBottom.removeClass("pdf");
@@ -1454,7 +1776,7 @@ WelcomeWall.FullArticle.prototype.activatePDFButtons = function (){
 	this.scrollButtonTop.unbind();
 	this.scrollButtonBottom.unbind();
 
-	this.articleCloseButton.click(function (){
+	this.articleCloseButton.bind("click", function (){
 		that.closeFullArticle();
 	});
 	this.articleCloseButton.fadeIn();
@@ -1465,7 +1787,7 @@ WelcomeWall.FullArticle.prototype.activatePDFButtons = function (){
 	else{
 		console.log("Showing Top Scroll Button");
 		this.scrollButtonTop.fadeIn();
-		this.scrollButtonTop.click(function(){
+		this.scrollButtonTop.bind("click", function(){
 			that.getPreviousPDFPage();
 		});
 	}
@@ -1476,7 +1798,7 @@ WelcomeWall.FullArticle.prototype.activatePDFButtons = function (){
 	else {
 		console.log("Showing Bottom Scroll Button");
 		this.scrollButtonBottom.html("Next Page").fadeIn();
-		this.scrollButtonBottom.click(function(){
+		this.scrollButtonBottom.bind("click", function(){
 			that.getNextPDFPage();
 		});
 	}
@@ -1487,12 +1809,14 @@ WelcomeWall.FullArticle.prototype.activateScrollButtons = function(){
 	//console.log(this.scrollStart);
 	//console.log(this.scrollNumber);
 	//console.log(this.articleHeight);
+	this.startTimer();
 	this.articleCloseButton.unbind();
 	this.scrollButtonTop.unbind();
 	this.scrollButtonBottom.unbind();
 	this.checkScrollNumbers();
 
-	this.articleCloseButton.click(function (){
+	this.articleCloseButton.bind("click", function (){
+		that.stopTimer();
 		that.closeFullArticle();
 	});
 	this.articleCloseButton.fadeIn();
@@ -1503,7 +1827,8 @@ WelcomeWall.FullArticle.prototype.activateScrollButtons = function(){
 	else{
 		console.log("Showing Top Scroll Button");
 		this.scrollButtonTop/*.html("Scroll Up")*/.fadeIn();
-		this.scrollButtonTop.click(function(){
+		this.scrollButtonTop.bind("click", function(){
+			that.stopTimer();
 			that.scrollArticleUp();
 		});
 	}
@@ -1514,7 +1839,8 @@ WelcomeWall.FullArticle.prototype.activateScrollButtons = function(){
 	else {
 		console.log("Showing Bottom Scroll Button");
 		this.scrollButtonBottom/*.html("Scroll Down")*/.fadeIn();
-		this.scrollButtonBottom.click(function(){
+		this.scrollButtonBottom.bind("click", function(){
+			that.stopTimer();
 			that.scrollArticleDown();
 		});
 	}
@@ -1543,6 +1869,9 @@ WelcomeWall.FullArticle.prototype.scrollArticleDown = function(){
 	if(this.bottomContentDiv){
 		this.bottomContentDiv.animate({top: "-="+scrollAmount});
 	}
+	if(this.articleOverlayContentContainer){
+		this.articleOverlayContentContainer.animate({top: "-="+scrollAmount});
+	}
 	
 	
 	this.scrollNumber +=scrollAmount;
@@ -1564,6 +1893,10 @@ WelcomeWall.FullArticle.prototype.scrollArticleUp = function(){
 	}
 	if(this.bottomContentDiv){
 		this.bottomContentDiv.animate({top: "+="+scrollAmount});
+	}
+
+	if(this.articleOverlayContentContainer){
+		this.articleOverlayContentContainer.animate({top: "+="+scrollAmount});
 	}
 	
 	
@@ -1632,10 +1965,28 @@ WelcomeWall.FullArticle.prototype.getPreviousPDFPage = function(){
       this.renderPDFPage(this.pageNum);
 }
 
+WelcomeWall.FullArticle.prototype.startTimer = function(){
+	console.log("Starting Article Timer");
+	var that = this;
+	this.stopTimer();
+	this.activityTimer = setInterval(function(){
+		console.log("Firing Article Activity Timer");
+		that.closeFullArticle();
+	}, 120000);
+}
+
+WelcomeWall.FullArticle.prototype.stopTimer = function(){
+	console.log("Stopping Flickr Image Timer");
+	clearInterval(this.activityTimer);
+}
+
+
 WelcomeWall.TileGroup.prototype.flipTile = function (tileNumber){
 	console.log("Flipping Tile: " + tileNumber);
 	this.bringTileToFront(tileNumber);
 	this.currentTile = tileNumber;
+	this.UnbindTiles();
+	this.startTimer();
 	//console.log(this.tiles[tileNumber].backFace.offset().top);
 	//var topPos = this.tiles[tileNumber].backFace.offset().top + 330;
 	//var leftPos = this.tiles[tileNumber].backFace.offset().left - 30;
@@ -1648,7 +1999,7 @@ WelcomeWall.TileGroup.prototype.flipTile = function (tileNumber){
 WelcomeWall.TileGroup.prototype.activateArticleNavButtons = function (){
 	if(this.tiles[this.currentTile].bodyLength > 400){
 		this.tileReadMoreButton.fadeIn();
-		this.tileReadMoreButton.click(bindContext(this.moreButtonClickHandler, this, this.currentTile));
+		this.tileReadMoreButton.bind("click", bindContext(this.moreButtonClickHandler, this, this.currentTile));
 	}
 	else{
 		this.tileCloseButton.addClass("single");
@@ -1657,7 +2008,7 @@ WelcomeWall.TileGroup.prototype.activateArticleNavButtons = function (){
 	this.tileCloseButton.fadeIn();
 	console.log(this.currentTile);
 	console.log(this.tiles[this.currentTile].bodyLength);
-	this.tileCloseButton.click(bindContext(this.closeButtonClickHandler, this, this.currentTile));
+	this.tileCloseButton.bind("click", bindContext(this.closeButtonClickHandler, this, this.currentTile));
 }
 
 WelcomeWall.TileGroup.prototype.deactivateArticleNavButtons = function (){
@@ -1672,8 +2023,9 @@ WelcomeWall.TileGroup.prototype.activateNavButtons = function (){
 	console.log(this.nextButton);
 	this.nextButton.fadeIn();
 	this.previousButton.fadeIn();
-	this.nextButton.click(bindContext(this.nextButtonClickHandler, this, this.currentTile));
-	this.previousButton.click(bindContext(this.previousButtonClickHandler, this, this.currentTile));
+	this.startTimer();
+	this.nextButton.bind("click", bindContext(this.nextButtonClickHandler, this, this.currentTile));
+	this.previousButton.bind("click", bindContext(this.previousButtonClickHandler, this, this.currentTile));
 }
 
 WelcomeWall.TileGroup.prototype.deactivateNavButtons = function (){
@@ -1689,8 +2041,9 @@ WelcomeWall.TileGroup.prototype.unBindNavButtons = function () {
 
 WelcomeWall.TileGroup.prototype.resetCurrentTile = function(tileNumber){
 	console.log("Resetting Tile: " + tileNumber);
-	
+	this.stopTimer();
 	this.tiles[this.currentTile].reset();
+	this.bindTiles();
 
 }
 
@@ -1739,6 +2092,20 @@ WelcomeWall.TileGroup.prototype.moreButtonEventHandler = function(info){
 	this.broker.trigger("MORE_BUTTON_CLICKED", info);
 }
 
+WelcomeWall.TileGroup.prototype.UnbindTiles = function(info){
+	//console.log("More Event");
+	for(var x in this.tiles){
+		this.tiles[x].unbindEvents();
+	}
+}
+
+WelcomeWall.TileGroup.prototype.bindTiles = function(info){
+	//console.log("More Event");
+	for(var x in this.tiles){
+		this.tiles[x].bindEvents();
+	}
+}
+
 WelcomeWall.TileGroup.prototype.goToNextTile = function (){
 	this.groupEvents.off("TILE_RESET:NAV");
 	var currentTileNumber = parseInt(this.currentTile);
@@ -1767,7 +2134,22 @@ WelcomeWall.TileGroup.prototype.goToPreviousTile = function (){
 	this.tiles[nextTile].flip();
 }
 
-WelcomeWall.Tile.prototype.clickHandler = function (){
+WelcomeWall.TileGroup.prototype.startTimer = function (){
+	console.log("Starting TileGroup Activity Timer");
+	this.stopTimer();
+	var that = this;
+	this.activityTimer = setInterval(function(){
+		console.log("Firing TileGroup Activity Timer");
+		that.closeButtonClickHandler();
+	},30000);
+}
+
+WelcomeWall.TileGroup.prototype.stopTimer = function (){
+	console.log("Stopping TileGroup Activity Timer");
+	clearInterval(this.activityTimer);
+}
+
+WelcomeWall.Tile.prototype.clickerHandler = function (){
 	this.broker.trigger("TILE_CLICKED", this.tileNumber);
 	this.flip();
 }
@@ -1791,6 +2173,14 @@ WelcomeWall.Tile.prototype.reset = function (){
 		that.broker.trigger("TILE_RESET", that.tileNumber);
 		that.broker.trigger("TILE_RESET:NAV", that.tileNumber);
 	});
+}
+
+WelcomeWall.Tile.prototype.bindEvents = function (){
+	this.container.bind("click", bindContext(this.clickerHandler, this));
+}
+
+WelcomeWall.Tile.prototype.unbindEvents = function (){
+	this.container.unbind();
 }
 
 
@@ -1842,7 +2232,7 @@ function loadPDFDocument(canvasId, url, callBack, callBackContext){
 
 
 function bindGlassPanel(element){
-	$(element).children(".panel-container").children(".panel.front").children(".open-button").click(function (){
+	/*$(element).children(".panel-container").children(".panel.front").children(".open-button").bind("click", function (){
 		$(this).unbind();
 		//$(element).children(".panel-container").children(".panel.front").children(".open-button").hide();
 		//$(element).children(".panel-container").children(".panel.front").children(".agenda-button").hide();
@@ -1850,7 +2240,7 @@ function bindGlassPanel(element){
 				rotateX: '180deg',
 				perspective: '500px'
 			}, function (){
-				$(this).children(".panel-container").children(".panel.back").children(".hide-button").click(function(){
+				$(this).children(".panel-container").children(".panel.back").children(".hide-button").bind("click", function(){
 					$(element).transition({
 						rotateX: '0deg',
 						perspective: '500px'}, function (){
@@ -1859,9 +2249,9 @@ function bindGlassPanel(element){
 					$(this).unbind();
 				});
 			});
-	});
+	});*/
 
-	$(element).children(".panel-container").children(".panel.front").children(".welcome-button").click(function (){
+	$(element).children(".panel-container").children(".panel.front").children(".welcome-button").bind("click", function (){
 		$(this).unbind();
 		//$(element).children(".panel-container").children(".panel.front").children(".open-button").hide();
 		//$(element).children(".panel-container").children(".panel.front").children(".agenda-button").hide();
@@ -1869,7 +2259,7 @@ function bindGlassPanel(element){
 				rotateX: '180deg',
 				perspective: '500px'
 			}, function (){
-				$(this).children(".panel-container").children(".panel.back").children(".hide-button").click(function(){
+				$(this).children(".panel-container").children(".panel.back").children(".hide-button").bind("click", function(){
 					$(element).transition({
 						rotateX: '0deg',
 						perspective: '500px'}, function (){
@@ -1928,7 +2318,7 @@ function flipTile(element){
 		console.log($("articlecontainer[article="+myArticleNumber+"] tile"));
 		$("articlecontainer[article="+myArticleNumber+"] tile").unbind();
 
-		readMoreButton.click(function(){
+		readMoreButton.bind("click", function(){
 			$(".article-button.readmore[article="+myArticleNumber+"]").hide();
 			$(".article-button.close[article="+myArticleNumber+"]").hide();
 			
@@ -1949,7 +2339,7 @@ function flipTile(element){
 		closeButton.offset({top:topPos, left: leftPos+90});
 		closeButton.fadeIn();
 
-		closeButton.click(function (){
+		closeButton.bind("click", function (){
 			
 			resetTile(element, myArticleNumber);
 			deactivateTileNavButtons(myArticleNumber);
@@ -2004,7 +2394,7 @@ function flipArticle(articleNumber){
 		$(".article-button.close[article="+articleNumber+"]").offset({top: topPos, left: leftPos});
 		$(".article-button.close[article="+articleNumber+"]").fadeIn();
 		$(".article-button.close[article="+articleNumber+"]").unbind();
-		$(".article-button.close[article="+articleNumber+"]").click(function (){
+		$(".article-button.close[article="+articleNumber+"]").bind("click", function (){
 			resetArticle(articleNumber);
 		});
 		
@@ -2026,7 +2416,7 @@ function resetArticle(articleNumber){
 
 function bindTiles(articleNumber){
 	$("articlecontainer[article="+articleNumber+"] tile").css({"-webkit-transform-style": "preserve-3d"}); 
-	$("articlecontainer[article="+articleNumber+"] tile").click(function (){
+	$("articlecontainer[article="+articleNumber+"] tile").bind("click", function (){
 			flipTile($(this));
 	});
 }
@@ -2034,13 +2424,13 @@ function bindTiles(articleNumber){
 function activateTileNavButtons(articleNumber){
 	$(".tile-nav-button.next[article="+articleNumber+"]").fadeIn();
 	$(".tile-nav-button.next[article="+articleNumber+"]").unbind();
-	$(".tile-nav-button.next[article="+articleNumber+"]").click(function(){
+	$(".tile-nav-button.next[article="+articleNumber+"]").bind("click", function(){
 		goToNextTile(articleNumber);
 	});
 
 	$(".tile-nav-button.previous[article="+articleNumber+"]").fadeIn();
 	$(".tile-nav-button.previous[article="+articleNumber+"]").unbind();
-	$(".tile-nav-button.previous[article="+articleNumber+"]").click(function(){
+	$(".tile-nav-button.previous[article="+articleNumber+"]").bind("click", function(){
 		goToPreviousTile(articleNumber);
 	});
 }
